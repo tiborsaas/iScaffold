@@ -74,7 +74,7 @@
     	<div class="group">
             <label class="label">{$%NAME_TABLE%_fields.%FIELD_NAME%}%IF_REQUIRED%<span class="error">*</span>%/IF_REQUIRED%</label>
     		<select class="field select addr" name="%FIELD_NAME%" >
-                <option value="0"></option>
+                <option value=""></option>
                 {foreach $related_%RELATED_TABLE% as $rel}
                     <option value="{$rel.%RELATED_TABLE%_id}"{if isset($%NAME_TABLE%_data)}{if $%NAME_TABLE%_data.%FIELD_NAME% == $rel.%RELATED_TABLE%_id} selected="selected"{/if}{/if}>{$rel.%RELATED_TABLE%_name}</option>
                 {/foreach}
@@ -112,7 +112,7 @@
         	<div class="block">
         	<span class="left">
         		<select class="field select addr" name="%FIELD_NAME%" >
-                    <option value="0"></option>
+                    <option value=""></option>
                     {foreach $metadata.%FIELD_NAME%.enum_values as $k => $e}
                         <option value="{$e}"{if isset($%NAME_TABLE%_data.%FIELD_NAME%)}{if $%NAME_TABLE%_data == $metadata.%FIELD_NAME%.enum_names[$k]} selected="selected"{/if}{/if}>{$metadata.%FIELD_NAME%.enum_names[$k]}</option>
                     {/foreach}

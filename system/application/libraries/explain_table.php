@@ -11,7 +11,7 @@ class explain_table {
 	{
 	    $returnARR = array();
 	    
-        $res = $this->ci->db->query( "EXPLAIN $table" );
+        $res = $this->ci->db->query( "EXPLAIN `$table`" );
         
         foreach( $res->result_array() as $field )
         {
