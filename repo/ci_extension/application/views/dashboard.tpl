@@ -11,7 +11,7 @@
 
                           <script type="text/javascript" src="https://www.google.com/jsapi"></script>
                           <script type="text/javascript">
-                          { literal }
+                          {literal}
                                 google.load("visualization", "1", {packages:["corechart"]});
                                 google.setOnLoadCallback(drawVisualization);
 
@@ -53,7 +53,7 @@
                                       );
                                 }
                                 
-                          { /literal }
+                          {/literal}
                           </script>
 
                           <div id="visualization"></div>
