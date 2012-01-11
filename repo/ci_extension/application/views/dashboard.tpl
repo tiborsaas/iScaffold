@@ -3,7 +3,7 @@
                 <div class="content">
                     <div class="inner">
                     <h3>Dashboard</h3>
-                          This is an example chart that you could put here
+                          This is an example chart that you could put here, or just simply delete the code.
 
                           <!--
                             Or just say hello to the user :)
