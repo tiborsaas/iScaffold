@@ -9,7 +9,8 @@ With some exaggeration the process is this simple:
 * Click generate
 * Take the application
 
-[Learn more at the iScaffold website](http://iscaffold.skyweb.hu)
+# User guide
+Start exploring iScaffold in details on the [GitHub wiki pages](https://github.com/kowdermeister/iScaffold/wiki).
 
 # Credits
 iScaffold is originally created by Ömür Yolcu Iskender, later heavily updated by Tibor Szász. 
