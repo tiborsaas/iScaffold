@@ -47,7 +47,7 @@
 
                 <div id="footer">
                     <div class="block">
-                    <p>The backend is generated with <a href="http://iscaffold.skyweb.hu" target="_blank">iScaffold 2.1</a></p>
+                    <p>The backend is generated with <a href="http://iscaffold.skyweb.hu" target="_blank">iScaffold 2.1.2</a></p>
                     </div>
                 </div>
             </div>

@@ -30,12 +30,14 @@ class %NAME_CONTROLLER% extends CI_Controller
         %MODEL_CALL%->pagination( TRUE );
 		$data_info = %MODEL_CALL%->lister( $page );
         $fields = %MODEL_CALL%->fields( TRUE );
+        %MANY_RELATION_RELATED_FIELDS%
 
         $this->template->assign( 'pager', %MODEL_CALL%->pager );
 		$this->template->assign( '%NAME_TABLE%_fields', $fields );
 		$this->template->assign( '%NAME_TABLE%_data', $data_info );
-		$this->template->assign( 'table_name', '%NAME_CONTROLLER%' );
-		$this->template->assign( 'template', 'list_%NAME_TABLE%' );
+        $this->template->assign( 'table_name', '%NAME_CONTROLLER%' );
+        $this->template->assign( 'template', 'list_%NAME_TABLE%' );
+        %MANY_RELATION_FIELD_ASSIGNS%
 		$this->template->display( 'frame_admin.tpl' );
     }
 
@@ -48,8 +50,10 @@ class %NAME_CONTROLLER% extends CI_Controller
     {
 		$data = %MODEL_CALL%->get( $id );
         $fields = %MODEL_CALL%->fields( TRUE );
+        %MANY_RELATION_RELATED_FIELD%
 
-		$this->template->assign( 'id', $id );
+        %MANY_RELATION_DATA_ASSIGNS%
+        $this->template->assign( 'id', $id );
 		$this->template->assign( '%NAME_TABLE%_fields', $fields );
 		$this->template->assign( '%NAME_TABLE%_data', $data );
 		$this->template->assign( 'table_name', '%NAME_CONTROLLER%' );

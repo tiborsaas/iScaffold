@@ -84,7 +84,8 @@ class %NAME_MODEL% extends CI_Model
         {
             $this->db->where( '%FIELDS_ID%', $id );
         }
-		$this->db->delete( '%NAME_TABLE%' );
+        $this->db->delete( '%NAME_TABLE%' );
+        %MODEL_DELETE_RELATIONS%
 	}
 
 

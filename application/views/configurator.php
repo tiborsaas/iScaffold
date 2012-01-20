@@ -102,10 +102,10 @@
                                                 <?php endif ?>
                                                </div>
                                                <?php if( $tdata['data'][$key]['sf_type'] == 'many_related' ): ?>
-                                    			   <div class="related_desc"><img src="<?=base_url()?>/system/application/images/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
-                                    			   <div class="many_related_desc"><img src="<?=base_url()?>/system/application/images/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
+                                    			   <div class="related_desc"><img src="<?=base_url()?>/repo/generator/images/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
+                                    			   <div class="many_related_desc"><img src="<?=base_url()?>/repo/generator/images/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
                                                <?php else: ?>
-                            					   <div class="related_desc"><img src="<?=base_url()?>/system/application/images/info.gif" alt="Info" />First, select the ID to join, then the field you wish to be listed.</div>
+                            					   <div class="related_desc"><img src="<?=base_url()?>/repo/generator/images/info.gif" alt="Info" />First, select the ID to join, then the field you wish to be listed.</div>
                                                <?php endif ?>
                                            </div>
 
@@ -164,8 +164,8 @@
                        <div class="related">
             			   <label for="">Related ID & field</label>
             			   <div class="select_holder"></div>
-            			   <div class="related_desc"><img src="<?=base_url()?>/system/application/images/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
-            			   <div class="many_related_desc"><img src="<?=base_url()?>/system/application/images/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
+            			   <div class="related_desc"><img src="<?=base_url()?>/repo/generator/images/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
+            			   <div class="many_related_desc"><img src="<?=base_url()?>/repo/generator/images/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
                        </div>
 
             		   <label for="">Description</label>

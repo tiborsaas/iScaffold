@@ -14,6 +14,7 @@ class model_iscaffold extends CI_Model
 
         // Big indents
         define( 'IN', "\t\t\t\t" );
+        define( 'IN2', "\t\t" );
         define( 'IN3', "\t\t\t" );
         define( 'IN4', "\t\t\t\t" );
         define( 'IN5', "\t\t\t\t\t" );
@@ -154,7 +155,8 @@ class model_iscaffold extends CI_Model
 		
 		$model_joins        = '';
         $model_related      = '';
-        
+        $model_delete_relations = '';
+
         $model_call_metadata = '';
         
         $many_functions     = '';
@@ -167,7 +169,11 @@ class model_iscaffold extends CI_Model
 
         $many_related_calls   = '';
         $many_related_assigns = '';
-        		
+        	
+        $many_relation_related_fields = ''; // %MANY_RELATION_RELATED_FIELDS% <-- list method
+        $many_relation_related_field = '';  // %MANY_RELATION_RELATED_FIELD% <-- show method in controller
+        $many_relation_field_asssigns = ''; // MANY_RELATION_FIELD_ASSIGNS
+
 		$model_row_array    = "array( \n";
 		$model_row_coll     = array();
 
@@ -316,6 +322,7 @@ class model_iscaffold extends CI_Model
         \$rel_data = \$this->db->get( '$rel_data[0]' );
         return \$rel_data->result_array();
     }\n\n\n\n";
+
                         /**
                             %RELATED_TABLE_MODELS% & %RELATED_TABLE_ASSIGNS% replacements
                             They should be located in the controllers
@@ -378,7 +385,32 @@ class model_iscaffold extends CI_Model
             \$return_arr[] = \$r[ \$tables[1].'_id' ];
         }
         return \$return_arr;  
+    }
+
+
+    function get_related_fields( \$switch_table, \$referring_table_set )
+    {
+        \$reference_id_arr = array();
+
+        foreach( \$referring_table_set as \$rts )
+        {
+            \$reference_id_arr[] = \$rts['" . $fields_id . "'];
+        }
+
+        \$tables = explode( '_', \$switch_table );
+        \$this->db->select( '" . $rel_data[1] . ", " . $rel_data[3] . ", ' . \$tables[0] . '_id' );
+        \$this->db->where_in( \$tables[0] . '_id', \$reference_id_arr );
+        \$this->db->join( \$tables[1], \$switch_table.'.'.\$tables[1].'_id = '.\$tables[1].'.a_id' );
+        \$res = \$this->db->get( \$switch_table );
+        \$return_arr = array();
+        foreach( \$res->result_array() as \$r )
+        {
+            \$return_arr[] = \$r;
+        }
+        return \$return_arr;  
     }\n\n\n\n";
+
+
                     /**
                      *  The same code for the one:one code generation is needed here too
                      */                                         
@@ -408,7 +440,26 @@ class model_iscaffold extends CI_Model
                     $many_related_data_assigns .= "\$this->template->assign( '$name_table".'_'."$rel_data[0]_data', \$$name_table".'_'."$rel_data[0]_data );\n"; 
                     $many_related_empty_assigns .= "\$this->template->assign( '$name_table".'_'."$rel_data[0]_data', array() );\n"; 
                     $many_related_post_assigns .= "\$this->template->assign( '$name_table".'_'."$rel_data[0]_data', \$this->input->post( '$field' ) );\n"; 
+
+                    $many_relation_related_fields .= "\$related_fields = \$this->model_books->get_related_fields( '$name_table".'_'."$rel_data[0]', \$data_info );";
+                    $many_relation_related_field .= "\$books_authors_data = \$this->model_books->get_related_fields( '$name_table".'_'."$rel_data[0]', array( '$fields_id' => \$id ) );";
+                    $many_relation_field_asssigns .= "\$this->template->assign( '".$name_table."_related_fields', \$related_fields );";
                 }
+
+                /**
+                 *  Created many related delete code to delete the records form the switch_table
+                 */
+                $has_many_relation = $this->has_related_table( $name_table ); // Bool or an array of name with connected table(s)
+
+                if( $has_many_relation )
+                {
+                    foreach( $has_many_relation as $mr )
+                    {
+                        $model_delete_relations .= "\n".IN2."\$this->db->where( '{$name_table}_id', \$id );
+        \$this->db->delete('{$mr}_{$name_table}');\n\n";
+                    }
+                }
+
 
 			} /* End id skipping if branch */ 
 			
@@ -452,6 +503,10 @@ class model_iscaffold extends CI_Model
 		$code_controller = str_replace( "%MANY_RELATION_INSERT%", $many_relation_insert, $code_controller );
 		$code_controller = str_replace( "%MANY_RELATION_UPDATE%", $many_relation_update, $code_controller );
 
+        $code_controller = str_replace( "%MANY_RELATION_RELATED_FIELDS%", $many_relation_related_fields, $code_controller );
+        $code_controller = str_replace( "%MANY_RELATION_RELATED_FIELD%",  $many_relation_related_field,  $code_controller );
+        $code_controller = str_replace( "%MANY_RELATION_FIELD_ASSIGNS%",  $many_relation_field_asssigns, $code_controller );
+
 		$code_controller = str_replace( "%MANY_RELATION_MODELS%",        $many_related_calls,         $code_controller );
 		$code_controller = str_replace( "%MANY_RELATION_DATA_ASSIGNS%",  $many_related_data_assigns,  $code_controller );
 		$code_controller = str_replace( "%MANY_RELATION_EMPTY_ASSIGNS%", $many_related_empty_assigns, $code_controller );
@@ -473,18 +528,19 @@ class model_iscaffold extends CI_Model
         **/                 		
 		$code_model = read_file( $data_path['input_model'] . 'model.php' );
 
-		$code_model = str_replace( "%NAME_MODEL%", 		     $name_model, 		   $code_model );
-		$code_model = str_replace( "%FIELDS_STRING%", 	     $fields_string, 	   $code_model );  
-		$code_model = str_replace( "%FIELDS_ARRAY%", 	     $fields_array, 	   $code_model );  
-		$code_model = str_replace( "%RAW_FIELDS_STRING%",    $raw_fields_string,   $code_model );
-		$code_model = str_replace( "%FIELDS_ID%", 		     $fields_id, 		   $code_model );
-		$code_model = str_replace( "%NAME_TABLE%", 		     $name_table, 		   $code_model );
-		$code_model = str_replace( "%MODELL_CALL_METADATA%", $model_call_metadata, $code_model );
-		$code_model = str_replace( "%MODEL_ROW_ARRAY%",      $model_row_array,     $code_model );
-		$code_model = str_replace( "%NAME_CONTROLLER%",      $name_controller,     $code_model );
-		$code_model = str_replace( "%MODEL_JOINS%",          $model_joins,         $code_model );
-		$code_model = str_replace( "%RELATED_TABLES%",       $model_related,       $code_model );
-		$code_model = str_replace( "%MANY_FUNCTIONS%",       $many_functions,      $code_model );
+		$code_model = str_replace( "%NAME_MODEL%", 		       $name_model, 		    $code_model );
+		$code_model = str_replace( "%FIELDS_STRING%", 	       $fields_string, 	        $code_model );  
+		$code_model = str_replace( "%FIELDS_ARRAY%", 	       $fields_array,           $code_model );  
+		$code_model = str_replace( "%RAW_FIELDS_STRING%",      $raw_fields_string,      $code_model );
+		$code_model = str_replace( "%FIELDS_ID%", 		       $fields_id,              $code_model );
+		$code_model = str_replace( "%NAME_TABLE%", 		       $name_table, 	        $code_model );
+		$code_model = str_replace( "%MODELL_CALL_METADATA%",   $model_call_metadata,    $code_model );
+		$code_model = str_replace( "%MODEL_ROW_ARRAY%",        $model_row_array,        $code_model );
+		$code_model = str_replace( "%NAME_CONTROLLER%",        $name_controller,        $code_model );
+		$code_model = str_replace( "%MODEL_JOINS%",            $model_joins,            $code_model );
+		$code_model = str_replace( "%RELATED_TABLES%",         $model_related,          $code_model );
+        $code_model = str_replace( "%MODEL_DELETE_RELATIONS%", $model_delete_relations, $code_model );
+		$code_model = str_replace( "%MANY_FUNCTIONS%",         $many_functions,         $code_model );
 
 		$file_model = $data_path['output_model'] . 'model_' . $name_table . '.php';
 		write_file( $file_model, $code_model );
@@ -544,19 +600,52 @@ class model_iscaffold extends CI_Model
         $code_view_show = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_show );
     
         // FIELD LOOP REPLACEMENT BLOCK
-        
+        // NOTICE: CURRENTLY NOT USED ID TEMPLATE
+
         $exp = '|%FIELD_LOOP%(.*)%/FIELD_LOOP%|is';
-        $to_replace = '';
+        $to_replace = ''; 
         
         preg_match( $exp, $code_view_show, $matches );
 
-		foreach ( $fields as $key => $field )
-		{
-		    $tmp = str_replace( '%FIELD_COUNT%', $key, $matches[1] ); 
-    		$to_replace .= str_replace( '%FIELD_ID%', $field, $tmp );
-		}
-    
-    	$code_view_show = preg_replace( $exp, $to_replace, $code_view_show );
+        foreach ( $fields as $key => $field )
+        {
+            if( $matches )
+            {
+                $tmp = str_replace( '%FIELD_COUNT%', $key, $matches[1] ); 
+                $to_replace .= str_replace( '%FIELD_ID%', $field, $tmp );
+            }
+        }
+
+        $fields_replacement = '';
+
+        // REPLACE %RECORD_FIELDS%
+        foreach ( $fields as $key => $field )
+        {
+            if( $this->table_config[$key]['sf_type'] == 'many_related' )
+            {
+                $rel_data = explode( '|', $this->table_config[$key]['sf_related'] );
+
+                $fields_replacement .= '<tr class="{cycle values=\'odd,even\'}">
+                    <td>{$'. $name_table .'_fields.'. $field .'}:</td>
+                    <td>
+                        {foreach $'. $name_table .'_'.$rel_data[0].'_data as $rel}
+                            {$rel.'.$rel_data[3].'}<br>
+                        {/foreach}
+                    </td>
+                </tr>';
+            }
+            else
+            {
+                $fields_replacement .= '<tr class="{cycle values=\'odd,even\'}">
+                    <td>{$'. $name_table .'_fields.'.$field.'}:</td>
+                    <td>{$'. $name_table .'_data.'.$field.'}</td>
+                </tr>';
+            }
+        }
+
+
+        $code_view_show = preg_replace( $exp, $to_replace, $code_view_show );
+        $code_view_show = str_replace( '%RECORD_FIELDS%', $fields_replacement, $code_view_show );
 
         // WRITE TO FILE
 		$file_view_show = $data_path['output_view'] . $name_view_show;
@@ -585,12 +674,25 @@ class model_iscaffold extends CI_Model
             if( $hidden_field == 0 )
             {
                 $table_header .= IN3 . '<th>{$' . $name_table . "_fields.". $field ."}</th>\n";
-                $table_contents .= IN . '<td>{$row.'. $field ."}</td>\n";
+                
+                // Test realted table
+                if( $this->table_config[$key]['sf_type'] == 'many_related' )
+                {
+                    $table_contents .= IN . "<td>\n";
+                    $table_contents .= IN5 . "{foreach \$". $name_table ."_related_fields as \$key=>\$rel}\n";
+                    $table_contents .= IN6 . "{if \$rel.". $name_table ."_id == \$row.b_id}{\$rel.a_name}<br>{/if}\n";
+                    $table_contents .= IN5 . "{/foreach}\n";
+                    $table_contents .= IN . "</td>\n";
+                }
+                else
+                {
+                    $table_contents .= IN . '<td>{$row.'. $field ."}</td>\n";
+                }
             }
         }
 
         $code_view_list = str_replace( "%TABLE_HEADER%",   $table_header,   $code_view_list );
-		$code_view_list = str_replace( "%TABLE_CONTENTS%", $table_contents,   $code_view_list );
+		$code_view_list = str_replace( "%TABLE_CONTENTS%", $table_contents, $code_view_list );
         $code_view_list = str_replace( "%NAME_VIEW_FORM%", $name_view_list, $code_view_list );
         $code_view_list = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_list );
         $code_view_list = str_replace( "%FIELD_ID%",       $fields_id,      $code_view_list );
@@ -615,7 +717,14 @@ class model_iscaffold extends CI_Model
 		{
 			if ( $key > 0 )
 			{
-                $this->form_factory->field_required = ( $table_meta[ $field ]['null'] == 'no' ) ? TRUE : FALSE;
+                if( isset( $table_meta[ $field ] ) )
+                {
+                    $this->form_factory->field_required = ( $table_meta[ $field ]['null'] == 'no' ) ? TRUE : FALSE;                    
+                }
+                else
+                {
+                    $this->form_factory->field_required = FALSE;                    
+                }
 				$code_form .= $this->form_factory->fetch_block( $field, $this->table_config[$key], $c );
 			}
 			$c++;
@@ -678,9 +787,9 @@ class model_iscaffold extends CI_Model
 	} /* End of Process_Table function */
 	
 	/**
-	 *     This method supposed to decide wether the table has a specific configuration type
-	 *     eg: has_field('file') will return true if sf_table has a "file" type field
-	 *     returns: bool	 
+     *  This method supposed to decide wether the table has a specific configuration type
+	 *  eg: has_field('file') will return true if sf_table has a "file" type field
+	 *  returns: bool	 
 	 */     	
 	function has_field( $name_table, $type )
 	{
@@ -694,5 +803,27 @@ class model_iscaffold extends CI_Model
             }
         }
         return $answer;
+    }
+
+
+    /**
+     *  Helps to decide if the table has any ONE => MANY relation
+     *  If it does, than the delete method should look different, 
+     *  because the switch table should be deleted as well
+     *  returns: false / array of related table name
+     */
+    function has_related_table( $name_table )
+    {
+        $this->db->like( 'sf_related', $name_table . '|', 'after' );
+        $res = $this->db->get('sf_config');
+        $related = $res->result_array();
+
+        $return_val = ( $this->db->count_all_results() > 0 ) ? array() : FALSE;
+
+        foreach( $related as $r )
+        {
+            $return_val[] = $r['sf_table'];
+        }
+        return $return_val;
     }
 }

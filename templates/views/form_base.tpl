@@ -74,7 +74,7 @@
     	<div class="group">
             <label class="label">{$%NAME_TABLE%_fields.%FIELD_NAME%}%IF_REQUIRED%<span class="error">*</span>%/IF_REQUIRED%</label>
     		<select class="field select addr" name="%FIELD_NAME%" >
-                <option value=""></option>
+                <option value="0"></option>
                 {foreach $related_%RELATED_TABLE% as $rel}
                     <option value="{$rel.%RELATED_TABLE%_id}"{if isset($%NAME_TABLE%_data)}{if $%NAME_TABLE%_data.%FIELD_NAME% == $rel.%RELATED_TABLE%_id} selected="selected"{/if}{/if}>{$rel.%RELATED_TABLE%_name}</option>
                 {/foreach}
@@ -88,7 +88,6 @@
     	<div class="group">
         	<fieldset>
                 <legend class="label">{$%NAME_TABLE%_fields.%FIELD_NAME%}</legend>
-        		<div class="block">
                         {foreach $related_%RELATED_TABLE% as $rel}
                 		    <span>
                                 <input id="chk-{$rel.%RELATED_TABLE%_id}" class="field checkbox" type="checkbox" value="{$rel.%RELATED_TABLE%_id}" name="%FIELD_NAME%[]" {if isset($%NAME_TABLE%_%RELATED_TABLE%_data)}{if in_array( $rel.%RELATED_TABLE%_id, $%NAME_TABLE%_%RELATED_TABLE%_data )}checked="checked" {/if}{/if}/>
@@ -96,10 +95,15 @@
                             </span>
                         {/foreach}
                 <br clear="left" />
-                <input type="button" value="Select all" onclick="chk_selector( 'all', this )" />
-                <input type="button" value="Select none" onclick="chk_selector( 'none', this )" />
-        		</div>
-        		%IF_FIELD_DESC%<p class="instruct">%FIELD_DESC%</p>%/IF_FIELD_DESC%
+                <br />
+
+                <button class="button" type="button" onclick="chk_selector( 'all', this )">
+                    Select all
+                </button>
+                <button class="button" type="button" onclick="chk_selector( 'none', this )">
+                    Select none
+                </button>
+                %IF_FIELD_DESC%<p class="instruct">%FIELD_DESC%</p>%/IF_FIELD_DESC%
             </fieldset>
        	</div>
     %/many_related%
@@ -112,7 +116,7 @@
         	<div class="block">
         	<span class="left">
         		<select class="field select addr" name="%FIELD_NAME%" >
-                    <option value=""></option>
+                    <option value="0"></option>
                     {foreach $metadata.%FIELD_NAME%.enum_values as $k => $e}
                         <option value="{$e}"{if isset($%NAME_TABLE%_data.%FIELD_NAME%)}{if $%NAME_TABLE%_data == $metadata.%FIELD_NAME%.enum_names[$k]} selected="selected"{/if}{/if}>{$metadata.%FIELD_NAME%.enum_names[$k]}</option>
                     {/foreach}

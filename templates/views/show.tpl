@@ -16,12 +16,7 @@
                                 <th width="20%">Field</th>
                                 <th>Value</th>
                         	</thead>
-						    %FIELD_LOOP%
-						        <tr class="{cycle values='odd,even'}">
-						            <td>{$%NAME_TABLE%_fields.%FIELD_ID%}:</td>
-						            <td>{$%NAME_TABLE%_data.%FIELD_ID%}</td>
-						        </tr>
-						    %/FIELD_LOOP%
+						    %RECORD_FIELDS%
 						</table>
                         <div class="actions-bar wat-cf">
                             <div class="actions">
