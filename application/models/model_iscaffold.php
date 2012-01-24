@@ -348,16 +348,19 @@ class model_iscaffold extends CI_Model
                      */                                                             
                     $many_functions = "\tfunction insert_relations( \$target_table, \$items, \$insert_id )
     {
-        foreach( \$items as \$i )
-        {
-            // Code assumes that the switch table is named: $name_table\_[ table2 name ]
-            \$tables = explode( '_', \$target_table );
-            \$data = array(
-                    \$tables[0].'_id' => \$insert_id,
-                    \$tables[1].'_id' => \$i,
-            );
-       		\$this->db->insert( \$target_table, \$data );
-        }
+		if(!empty(\$items))
+		{
+			foreach( \$items as \$i )
+			{
+				// Code assumes that the switch table is named: $name_table\_[ table2 name ]
+				\$tables = explode( '_', \$target_table );
+				\$data = array(
+						\$tables[0].'_id' => \$insert_id,
+						\$tables[1].'_id' => \$i,
+				);
+				\$this->db->insert( \$target_table, \$data );
+			}
+		}
     }
 
 
@@ -399,8 +402,13 @@ class model_iscaffold extends CI_Model
 
         \$tables = explode( '_', \$switch_table );
         \$this->db->select( '" . $rel_data[1] . ", " . $rel_data[3] . ", ' . \$tables[0] . '_id' );
-        \$this->db->where_in( \$tables[0] . '_id', \$reference_id_arr );
-        \$this->db->join( \$tables[1], \$switch_table.'.'.\$tables[1].'_id = '.\$tables[1].'.a_id' );
+		
+		if(!empty(\$reference_id_arr))
+		{
+			\$this->db->where_in( \$tables[0] . '_id', \$reference_id_arr );
+		}
+		
+        \$this->db->join( \$tables[1], \$switch_table.'.'.\$tables[1].'_id = '.\$tables[1].'." . $rel_data[1] . "' );
         \$res = \$this->db->get( \$switch_table );
         \$return_arr = array();
         foreach( \$res->result_array() as \$r )
@@ -441,8 +449,8 @@ class model_iscaffold extends CI_Model
                     $many_related_empty_assigns .= "\$this->template->assign( '$name_table".'_'."$rel_data[0]_data', array() );\n"; 
                     $many_related_post_assigns .= "\$this->template->assign( '$name_table".'_'."$rel_data[0]_data', \$this->input->post( '$field' ) );\n"; 
 
-                    $many_relation_related_fields .= "\$related_fields = \$this->model_books->get_related_fields( '$name_table".'_'."$rel_data[0]', \$data_info );";
-                    $many_relation_related_field .= "\$books_authors_data = \$this->model_books->get_related_fields( '$name_table".'_'."$rel_data[0]', array( '$fields_id' => \$id ) );";
+                    $many_relation_related_fields .= "\$related_fields = \$this->model_" . $name_table . "->get_related_fields( '$name_table".'_'."$rel_data[0]', \$data_info );";
+                    $many_relation_related_field .= "\$" .$name_table . "_" . $rel_data[0] . "_data = \$this->model_" . $name_table . "->get_related_fields( '$name_table".'_'."$rel_data[0]', array( '$fields_id' => \$id ) );";
                     $many_relation_field_asssigns .= "\$this->template->assign( '".$name_table."_related_fields', \$related_fields );";
                 }
 
@@ -680,7 +688,7 @@ class model_iscaffold extends CI_Model
                 {
                     $table_contents .= IN . "<td>\n";
                     $table_contents .= IN5 . "{foreach \$". $name_table ."_related_fields as \$key=>\$rel}\n";
-                    $table_contents .= IN6 . "{if \$rel.". $name_table ."_id == \$row.b_id}{\$rel.a_name}<br>{/if}\n";
+                    $table_contents .= IN6 . "{if \$rel.". $name_table ."_id == \$row." . $fields_id . "}{\$rel." . $rel_data[3] . "}<br>{/if}\n";
                     $table_contents .= IN5 . "{/foreach}\n";
                     $table_contents .= IN . "</td>\n";
                 }
