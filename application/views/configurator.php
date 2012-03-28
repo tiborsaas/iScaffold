@@ -1,64 +1,84 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?php
+
+/****************************************************************************
+ *  configurator.php
+ *  The template loaded in the iframe
+ *  =========================================================================
+ *  Copyright 2012 Tibor Szász
+ *  This file is part of iScaffold.
+ *
+ *  GNU GPLv3 license
+ *
+ *  iScaffold is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  iScaffold is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with iScaffold.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
+?><!DOCTYPE html>
+<html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link rel="stylesheet" href="<?php echo base_url(); ?>repo/generator/styles/reset.css" type="text/css" />
-		<link rel="stylesheet" href="<?php echo base_url(); ?>repo/generator/styles/style.css" type="text/css" />
-	    <link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
-    	<script src="<?php echo base_url(); ?>repo/generator/js/mootools.js"></script>
-		<script src="<?php echo base_url(); ?>repo/generator/js/mootools-more.js"></script>
-		<script src="<?php echo base_url(); ?>repo/generator/js/configurator.js"></script>
-        <script>
-            var base_url = '<?=base_url()?>';
-            var db_name = '<?=$db_name?>';
-        </script>
+
+        <base href="<?php echo base_url(); ?>">
+
+		<link rel="stylesheet" href="repo/generator/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="repo/generator/css/configurator.css" type="text/css" />
+
+    	<script src="repo/generator/js/mootools.js"></script>
+		<script src="repo/generator/js/mootools-more.js"></script>
+		<script src="repo/generator/js/configurator.js"></script>
 		<title><?php echo "$app_name $app_version"; ?></title>
 	</head>
 	<body>
 		<!-- The main container -->
 		<div id="container">
-			<!-- The header -->
-			<div id="header">
-				<h1 id="title"><?php echo "$app_name $app_version"; ?></h1>
-				<p id="version-codename">Codename: <?php echo $app_codename; ?></p>
-			</div>
-			<!-- The Container -->
+
 			<div id="content">
 				<div id="welcome">
-					<!-- Welcome message -->
-					<h2>Configuring <?=$db_name?></h2>
-					<hr>
-                    <?php if( !empty( $config ) ): ?>
-    					<p id="conf-menu">
-                            <a href="javascript:conf.check( '<?=base_url()?>index.php/configurator/modify/reset/<?=$db_name?>', 'Are you sure? This action will erase all the settings you made.' )" id="" class="link-icon">Reset config table</a> delete all settings you made, but keep the config table's fields.<br />
-                            <a href="javascript:conf.check( '<?=base_url()?>index.php/configurator/modify/generate/<?=$db_name?>', 'Are you sure? This action will drop the config table.')" id="" class="link-icon">Regenerate config table</a> truncates config table and refills it from your database schema.<br />
-                            <a href="javascript:conf.check( '<?=base_url()?>index.php/configurator/modify/update/<?=$db_name?>', 'Are you sure? This action will modify the settings you made.')" id="" class="link-icon">Update config table</a> scans your schema, if you made changes, like a new table or field, it will be added to the config table.<br />
-                        </p>
-                    <?php endif; ?>
 
                     <?php if( !empty( $config ) ): ?>
-                        <div id="succes-message" class="message">
-                            <p>You are ready to configure your database schema. Use the 'SAVE' button at the bottom of the page.</p>
+                        <div class="alert alert-success">
+                            <a class="close" id="alert_close" data-dismiss="alert">×</a>
+                            <p>You are ready to configure your database schema. Use the 'Save changes' button at the bottom of the page.</p>
     					</div>
                     <?php else: ?>
-                        <div id="warning-message" class="message">
+
+                        <div class="alert alert-block">
                             <p>Database table "sf_config" does not exists, <a href="<?=base_url()?>index.php/configurator/create_table/<?=$db_name?>" class="link-icon">click here to create it.</a></p>
     					</div>
-                        This action will create an "sf_config" table in your database named <em><?=$db_name?></em> to store the settings you made.
-                        <br />
-                        <br />
-                        You can delete it after the code is generated, but I suggest you to keep it until your project is ready, you might want to
-                        regenerate the source codes more than one time.
+
+                        <div id="conf-menu"  class="alert alert-info">
+                            This action will create an "sf_config" table in your database named <em><?=$db_name?></em> to store the settings you made.
+                            <br />
+                            <br />
+                            You can delete it after the code is generated, but I suggest you to keep it until your project is ready, you might want to
+                            regenerate the source codes more than one time.
+                        </div>
                         <br />
                         <br />
                     <?php endif; ?>
+
+                    <div class="tabbable tabs-left" id="table_selector">
+                        <ul class="nav nav-tabs">
+                            <?php foreach( $config as $table => $tdata ): ?>
+                                <li><a><?=$table?></a></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
 
                     <div id="configurator">
                     <?php if( !empty( $config ) ): ?>
                         <?php foreach( $config as $table => $tdata ): ?>
-
-    					   <h3><?=$table?></h3>
-                           <div class="table">
+                           <div class="table" rel="<?=$table?>">
                                 <ul id="<?=$table?>">
                                     <?php foreach( $tdata['fields'] as $key => $field ): ?>
                                       <li>
@@ -102,10 +122,10 @@
                                                 <?php endif ?>
                                                </div>
                                                <?php if( $tdata['data'][$key]['sf_type'] == 'many_related' ): ?>
-                                    			   <div class="related_desc"><img src="<?=base_url()?>/repo/generator/images/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
-                                    			   <div class="many_related_desc"><img src="<?=base_url()?>/repo/generator/images/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
+                                    			   <div class="related_desc"><img src="repo/generator/img/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
+                                    			   <div class="many_related_desc"><img src="repo/generator/img/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
                                                <?php else: ?>
-                            					   <div class="related_desc"><img src="<?=base_url()?>/repo/generator/images/info.gif" alt="Info" />First, select the ID to join, then the field you wish to be listed.</div>
+                            					   <div class="related_desc"><img src="repo/generator/img/info.gif" alt="Info" />First, select the ID to join, then the field you wish to be listed.</div>
                                                <?php endif ?>
                                            </div>
 
@@ -121,17 +141,25 @@
 					           <a href="javascript:conf.addRelation('<?=$table?>')" class="button">Add many relation</a>
     					   </div>
                         <?php endforeach; ?>
-					    <a href="javascript:conf.saveConfig()" class="button positive" id="save_button">Save schema config</a> 
-					    <iframe id="debug_rsp" width="100%" height="1" frameborder="0" ></iframe>
-                        <a href="<?=base_url()?>" class="button negative">Back WITHOUT saving</a>
 					<?php endif; ?>
                     </div>
 				</div>
 			</div>
+
+
 			<!-- The footer -->
-			<div id="footer">
-				<p>&#169;2009-<?php echo date('Y'); ?> - Tibor Szász, &#214;m&#252;r Yolcu &#73;skender,  All rights reserved<br />This application is powered by CodeIgniter</p>
-			</div>
+            <?php if( !empty( $config ) ): ?>
+                <div id="danger_actions" class="alert alert-error">
+                    <h4>Danger zone!</h4>
+                    <p id="conf-menu">
+                        <a href="javascript:conf.check( '<?=base_url()?>index.php/configurator/modify/reset/<?=$db_name?>', 'Are you sure? This action will erase all the settings you made.' )" id="" class="link-icon">Reset config table</a> delete all settings you made, but keep the config table's fields.<br />
+                        <a href="javascript:conf.check( '<?=base_url()?>index.php/configurator/modify/generate/<?=$db_name?>', 'Are you sure? This action will drop the config table.')" id="" class="link-icon">Regenerate config table</a> truncates config table and refills it from your database schema.<br />
+                        <a href="javascript:conf.check( '<?=base_url()?>index.php/configurator/modify/update/<?=$db_name?>', 'Are you sure? This action will modify the settings you made.')" id="" class="link-icon">Update config table</a> scans your schema, if you made changes, like a new table or field, it will be added to the config table.<br />
+                    </p>
+                </div>
+            <?php endif; ?>
+
+
 			<div id="templates">
 
                 <!-- SELECT TEMPLATE FOR RELATIONS -->
@@ -164,8 +192,8 @@
                        <div class="related">
             			   <label for="">Related ID & field</label>
             			   <div class="select_holder"></div>
-            			   <div class="related_desc"><img src="<?=base_url()?>/repo/generator/images/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
-            			   <div class="many_related_desc"><img src="<?=base_url()?>/repo/generator/images/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
+            			   <div class="related_desc"><img src="repo/generator/img/info.gif" alt="Info" />First, select the ID to store in the switch table, then the field you wish to be displayed.</div>
+            			   <div class="many_related_desc"><img src="repo/generator/img/red.gif" alt="Info" />Be sure, that your database has a 'switch' table, named <strong><?=$table?>_<span></span></strong></div>
                        </div>
 
             		   <label for="">Description</label>

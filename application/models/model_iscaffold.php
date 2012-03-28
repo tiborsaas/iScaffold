@@ -1,10 +1,34 @@
 <?php
 
-//  model_iscaffold
-//
-//  Created by Herr Kaleun on 2009-05-09.
-//  Extended by Tibor Szász in 2009-10-*
-//  Copyright (c) 2009 iScaffold. All rights reserved.
+/****************************************************************************
+ *  model_iscaffold.php
+ *  Original verstion created by Herr Kaleun on 2009-05-09.
+ *  Extended by Tibor Szász in 2009-10-*
+ *
+ *  This model is used to genereate the source code for each table
+ *  If a model, view or controller file is not present in the template,
+ *  then it will be skipped.
+ *
+ *  =========================================================================
+ *  Copyright 2012 Tibor Szász
+ *  This file is part of iScaffold.
+ *
+ *  GNU GPLv3 license
+ *
+ *  iScaffold is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  iScaffold is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with iScaffold.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
 
 class model_iscaffold extends CI_Model 
 {
@@ -42,7 +66,8 @@ class model_iscaffold extends CI_Model
 		$this->sql_numeric_fields = array( 'float', 'double', 'decimal' );
 	}
 
-	function Process_Table ( $name_table, $data_path )
+
+	function Process_Table ( $name_table, $data_path, $code_template, $manifest )
 	{
 
         /**
@@ -477,97 +502,94 @@ class model_iscaffold extends CI_Model
         $model_row_array .= implode( "", $model_row_coll ); 
         $model_row_array .= " );"; 
 
+
+
+
 		/** 
 			Begin Code generation into template files
             
             Generate CONTROLLER templates 
 		**/
-        $has_file_field = $this->has_field( $name_table, 'file' );
-         
-        $file_upload_validation = ( !$has_file_field ) ? '' : '|| $this->uploader->success == FALSE || $this->uploader->required_empty !== FALSE';
-        $load_upload_model      = ( !$has_file_field ) ? '' : "\$this->load->model( 'uploader' );";
-        $file_upload_errors     = ( !$has_file_field ) ? '' : "\$errors .= ( \$this->uploader->success ) ? '' : \$this->uploader->response;\n";
-        $file_upload_errors    .= ( !$has_file_field ) ? '' : IN5 . "\$errors .= \$this->uploader->required_empty;";
+        if( isset( $data_path['input_controllers'] ) )
+        {            
+            $has_file_field = $this->has_field( $name_table, 'file' );
+             
+            $file_upload_validation = ( !$has_file_field ) ? '' : '|| $this->uploader->success == FALSE || $this->uploader->required_empty !== FALSE';
+            $load_upload_model      = ( !$has_file_field ) ? '' : "\$this->load->model( 'uploader' );";
+            $file_upload_errors     = ( !$has_file_field ) ? '' : "\$errors .= ( \$this->uploader->success ) ? '' : \$this->uploader->response;\n";
+            $file_upload_errors    .= ( !$has_file_field ) ? '' : IN5 . "\$errors .= \$this->uploader->required_empty;";
 
-		$code_controller = read_file( $data_path['input_controller'] . 'controller.php' );                                                               
-		
-		$code_controller = str_replace( "%MODEL_CALL%", 		$model_call, 		$code_controller );
+    		$code_controller = read_file( $data_path['input_controllers'] . 'controller.php' );                                                               
+    		
+    		$code_controller = str_replace( "%MODEL_CALL%", 		$model_call, 		$code_controller );
 
-		$code_controller = str_replace( "%VALUES_INIT%", 		$values_init, 	    $code_controller );
-		$code_controller = str_replace( "%VALUES_INIT_EDIT%", 	$values_init_edit,  $code_controller );
+    		$code_controller = str_replace( "%VALUES_INIT%", 		$values_init, 	    $code_controller );
+    		$code_controller = str_replace( "%VALUES_INIT_EDIT%", 	$values_init_edit,  $code_controller );
 
-		$code_controller = str_replace( "%NAME_TABLE%", 		$name_table, 		$code_controller );  
-		$code_controller = str_replace( "%NAME_CONTROLLER%", 	$name_controller,   $code_controller );
-		$code_controller = str_replace( "%NAME_MODEL_LOWER%", 	$name_model_lower,  $code_controller );
-		
-		$code_controller = str_replace( "%SET_RULES%", 			$set_rules, 	    $code_controller );
-		$code_controller = str_replace( "%SET_VALUE%", 			$set_value, 		$code_controller );
-		$code_controller = str_replace( "%VALIDATION_FALSE%", 	$validation_false,  $code_controller );
-		$code_controller = str_replace( "%VALIDATION_TRUE%", 	$validation_true,   $code_controller );
-		
-		$code_controller = str_replace( "%RELATED_TABLE_MODELS%",  $ctrl_related_calls,   $code_controller );
-		$code_controller = str_replace( "%RELATED_TABLE_ASSIGNS%", $ctrl_related_assigns, $code_controller );
-		
-		$code_controller = str_replace( "%MANY_RELATION_INSERT%", $many_relation_insert, $code_controller );
-		$code_controller = str_replace( "%MANY_RELATION_UPDATE%", $many_relation_update, $code_controller );
+    		$code_controller = str_replace( "%NAME_TABLE%", 		$name_table, 		$code_controller );  
+    		$code_controller = str_replace( "%NAME_CONTROLLER%", 	$name_controller,   $code_controller );
+    		$code_controller = str_replace( "%NAME_MODEL_LOWER%", 	$name_model_lower,  $code_controller );
+    		
+    		$code_controller = str_replace( "%SET_RULES%", 			$set_rules, 	    $code_controller );
+    		$code_controller = str_replace( "%SET_VALUE%", 			$set_value, 		$code_controller );
+    		$code_controller = str_replace( "%VALIDATION_FALSE%", 	$validation_false,  $code_controller );
+    		$code_controller = str_replace( "%VALIDATION_TRUE%", 	$validation_true,   $code_controller );
+    		
+    		$code_controller = str_replace( "%RELATED_TABLE_MODELS%",  $ctrl_related_calls,   $code_controller );
+    		$code_controller = str_replace( "%RELATED_TABLE_ASSIGNS%", $ctrl_related_assigns, $code_controller );
+    		
+    		$code_controller = str_replace( "%MANY_RELATION_INSERT%", $many_relation_insert, $code_controller );
+    		$code_controller = str_replace( "%MANY_RELATION_UPDATE%", $many_relation_update, $code_controller );
 
-        $code_controller = str_replace( "%MANY_RELATION_RELATED_FIELDS%", $many_relation_related_fields, $code_controller );
-        $code_controller = str_replace( "%MANY_RELATION_RELATED_FIELD%",  $many_relation_related_field,  $code_controller );
-        $code_controller = str_replace( "%MANY_RELATION_FIELD_ASSIGNS%",  $many_relation_field_asssigns, $code_controller );
+            $code_controller = str_replace( "%MANY_RELATION_RELATED_FIELDS%", $many_relation_related_fields, $code_controller );
+            $code_controller = str_replace( "%MANY_RELATION_RELATED_FIELD%",  $many_relation_related_field,  $code_controller );
+            $code_controller = str_replace( "%MANY_RELATION_FIELD_ASSIGNS%",  $many_relation_field_asssigns, $code_controller );
 
-		$code_controller = str_replace( "%MANY_RELATION_MODELS%",        $many_related_calls,         $code_controller );
-		$code_controller = str_replace( "%MANY_RELATION_DATA_ASSIGNS%",  $many_related_data_assigns,  $code_controller );
-		$code_controller = str_replace( "%MANY_RELATION_EMPTY_ASSIGNS%", $many_related_empty_assigns, $code_controller );
-		$code_controller = str_replace( "%MANY_RELATION_POST_ASSIGNS%",  $many_related_post_assigns,  $code_controller );
+    		$code_controller = str_replace( "%MANY_RELATION_MODELS%",        $many_related_calls,         $code_controller );
+    		$code_controller = str_replace( "%MANY_RELATION_DATA_ASSIGNS%",  $many_related_data_assigns,  $code_controller );
+    		$code_controller = str_replace( "%MANY_RELATION_EMPTY_ASSIGNS%", $many_related_empty_assigns, $code_controller );
+    		$code_controller = str_replace( "%MANY_RELATION_POST_ASSIGNS%",  $many_related_post_assigns,  $code_controller );
 
-		$code_controller = str_replace( "%FILE_UPLOAD_VALIDATION%", $file_upload_validation, $code_controller );
-		$code_controller = str_replace( "%LOAD_UPLOAD_MODEL%",      $load_upload_model,      $code_controller );
-		$code_controller = str_replace( "%FILE_UPLOAD_ERRORS%",     $file_upload_errors,     $code_controller );
+    		$code_controller = str_replace( "%FILE_UPLOAD_VALIDATION%", $file_upload_validation, $code_controller );
+    		$code_controller = str_replace( "%LOAD_UPLOAD_MODEL%",      $load_upload_model,      $code_controller );
+    		$code_controller = str_replace( "%FILE_UPLOAD_ERRORS%",     $file_upload_errors,     $code_controller );
 
-		$file_controller = $data_path['output_controller'] . $name_table . '.php';
-		write_file( $file_controller, $code_controller );
+            if( !is_dir( $data_path['output_controllers'] ) )
+            {
+                mkdir( $data_path['output_controllers'], 0777);
+            }
+    		$file_controller = $data_path['output_controllers'] . $name_table . '.php';
+    		write_file( $file_controller, $code_controller );
+        }
 
-
-		
 
 
         /**
             Generate MODEL templates
         **/                 		
-		$code_model = read_file( $data_path['input_model'] . 'model.php' );
-
-		$code_model = str_replace( "%NAME_MODEL%", 		       $name_model, 		    $code_model );
-		$code_model = str_replace( "%FIELDS_STRING%", 	       $fields_string, 	        $code_model );  
-		$code_model = str_replace( "%FIELDS_ARRAY%", 	       $fields_array,           $code_model );  
-		$code_model = str_replace( "%RAW_FIELDS_STRING%",      $raw_fields_string,      $code_model );
-		$code_model = str_replace( "%FIELDS_ID%", 		       $fields_id,              $code_model );
-		$code_model = str_replace( "%NAME_TABLE%", 		       $name_table, 	        $code_model );
-		$code_model = str_replace( "%MODELL_CALL_METADATA%",   $model_call_metadata,    $code_model );
-		$code_model = str_replace( "%MODEL_ROW_ARRAY%",        $model_row_array,        $code_model );
-		$code_model = str_replace( "%NAME_CONTROLLER%",        $name_controller,        $code_model );
-		$code_model = str_replace( "%MODEL_JOINS%",            $model_joins,            $code_model );
-		$code_model = str_replace( "%RELATED_TABLES%",         $model_related,          $code_model );
-        $code_model = str_replace( "%MODEL_DELETE_RELATIONS%", $model_delete_relations, $code_model );
-		$code_model = str_replace( "%MANY_FUNCTIONS%",         $many_functions,         $code_model );
-
-		$file_model = $data_path['output_model'] . 'model_' . $name_table . '.php';
-		write_file( $file_model, $code_model );
-
-        
-        /**
-            Generate Uploader MODELS
-            Right now it is a static file, nothing to configure
-        **/
-        
-        $uploader_model_path = $data_path['output_model'] . 'uploader.php';
-                          		
-        if( !file_exists( $uploader_model_path ) )
+        if( isset( $data_path['input_models'] ) )
         {
-            $uploader_model = read_file( $data_path['input_model'] . 'uploader.php' );
-            file_put_contents( $uploader_model_path, $uploader_model ); // Create file
-        }
+    		$code_model = read_file( $data_path['input_models'] . 'model.php' );
 
-    
+    		$code_model = str_replace( "%NAME_MODEL%", 		       $name_model, 		    $code_model );
+    		$code_model = str_replace( "%FIELDS_STRING%", 	       $fields_string, 	        $code_model );  
+    		$code_model = str_replace( "%FIELDS_ARRAY%", 	       $fields_array,           $code_model );  
+    		$code_model = str_replace( "%RAW_FIELDS_STRING%",      $raw_fields_string,      $code_model );
+    		$code_model = str_replace( "%FIELDS_ID%", 		       $fields_id,              $code_model );
+    		$code_model = str_replace( "%NAME_TABLE%", 		       $name_table, 	        $code_model );
+    		$code_model = str_replace( "%MODELL_CALL_METADATA%",   $model_call_metadata,    $code_model );
+    		$code_model = str_replace( "%MODEL_ROW_ARRAY%",        $model_row_array,        $code_model );
+    		$code_model = str_replace( "%NAME_CONTROLLER%",        $name_controller,        $code_model );
+    		$code_model = str_replace( "%MODEL_JOINS%",            $model_joins,            $code_model );
+    		$code_model = str_replace( "%RELATED_TABLES%",         $model_related,          $code_model );
+            $code_model = str_replace( "%MODEL_DELETE_RELATIONS%", $model_delete_relations, $code_model );
+    		$code_model = str_replace( "%MANY_FUNCTIONS%",         $many_functions,         $code_model );
+
+    		$file_model = $data_path['output_models'] . 'model_' . $name_table . '.php';
+    		write_file( $file_model, $code_model );
+        }
+        
+
 
 
         /**
@@ -575,138 +597,153 @@ class model_iscaffold extends CI_Model
             Right now it is a static file, nothing to configure
         **/
 
-        $frame_view_path = $data_path['output_view'] . 'frame_admin.tpl';
-
-        if( !file_exists( $frame_view_path ) )
+        if( isset( $data_path['input_views'] ) )
         {
-            $list_of_tables = '<ul id="top_menu">';
-
-            foreach( $this->db->list_tables() as $t )
+            if( file_exists( $data_path['input_views'] . 'frame_admin.tpl' ) )
             {
-                if( $t !== 'sf_config' ) $list_of_tables .= IN6 . "<li{if isset(\$table_name)}{if \$table_name == '".ucfirst($t)."'} class='active'{/if}{/if}><a href='$t'>".ucfirst($t)."</a></li>\n";
+                $frame_view_path = $data_path['output_views'] . 'frame_admin.tpl';
+
+                if( !file_exists( $frame_view_path ) )
+                {
+                    $list_of_tables = '<ul id="top_menu">';
+
+                    foreach( $this->db->list_tables() as $t )
+                    {
+                        if( $t !== 'sf_config' ) $list_of_tables .= IN6 . "<li{if isset(\$table_name)}{if \$table_name == '".ucfirst($t)."'} class='active'{/if}{/if}><a href='$t'>".ucfirst($t)."</a></li>\n";
+                    }
+                    $list_of_tables .= IN5 . '</ul>';
+
+                    $frame_view_content = read_file( $data_path['input_views'] . 'frame_admin.tpl' );
+
+                    // Replacements
+        		    $frame_view_content = str_replace( "%LIST_OF_TABLES%", $list_of_tables, $frame_view_content );
+        		    $frame_view_content = str_replace( "%DATABASE_NAME%", ucfirst( $this->db->database ), $frame_view_content );
+
+                    file_put_contents( $frame_view_path, $frame_view_content ); // Create file
+                }
             }
-            $list_of_tables .= IN5 . '</ul>';
-
-            $frame_view_content = read_file( $data_path['input_view'] . 'frame_admin.tpl' );
-
-            // Replacements
-		    $frame_view_content = str_replace( "%LIST_OF_TABLES%", $list_of_tables, $frame_view_content );
-		    $frame_view_content = str_replace( "%DATABASE_NAME%", ucfirst( $this->db->database ), $frame_view_content );
-
-            file_put_contents( $frame_view_path, $frame_view_content ); // Create file
         }
-
 
 
 
         /**
             Generate 'show' VIEW templates
         **/
-		$code_view_show = read_file( $data_path['input_view'] . 'show.tpl' );
-	
-		$code_view_show = str_replace( "%NAME_VIEW_FORM%", $name_view_show, $code_view_show );
-        $code_view_show = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_show );
-    
-        // FIELD LOOP REPLACEMENT BLOCK
-        // NOTICE: CURRENTLY NOT USED ID TEMPLATE
-
-        $exp = '|%FIELD_LOOP%(.*)%/FIELD_LOOP%|is';
-        $to_replace = ''; 
-        
-        preg_match( $exp, $code_view_show, $matches );
-
-        foreach ( $fields as $key => $field )
+        if( isset( $data_path['input_views'] ) )
         {
-            if( $matches )
+            if( file_exists( $data_path['input_views'] . 'show.tpl' ) )
             {
-                $tmp = str_replace( '%FIELD_COUNT%', $key, $matches[1] ); 
-                $to_replace .= str_replace( '%FIELD_ID%', $field, $tmp );
+        		$code_view_show = read_file( $data_path['input_views'] . 'show.tpl' );
+        		$code_view_show = str_replace( "%NAME_VIEW_FORM%", $name_view_show, $code_view_show );
+                $code_view_show = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_show );
+            
+                // FIELD LOOP REPLACEMENT BLOCK
+                // NOTICE: CURRENTLY NOT USED ID TEMPLATE
+
+                $exp = '|%FIELD_LOOP%(.*)%/FIELD_LOOP%|is';
+                $to_replace = ''; 
+                
+                preg_match( $exp, $code_view_show, $matches );
+
+                foreach ( $fields as $key => $field )
+                {
+                    if( $matches )
+                    {
+                        $tmp = str_replace( '%FIELD_COUNT%', $key, $matches[1] ); 
+                        $to_replace .= str_replace( '%FIELD_ID%', $field, $tmp );
+                    }
+                }
+
+                $fields_replacement = '';
+
+                // REPLACE %RECORD_FIELDS%
+                foreach ( $fields as $key => $field )
+                {
+                    if( $this->table_config[$key]['sf_type'] == 'many_related' )
+                    {
+                        $rel_data = explode( '|', $this->table_config[$key]['sf_related'] );
+
+                        $fields_replacement .= '<tr class="{cycle values=\'odd,even\'}">
+                            <td>{$'. $name_table .'_fields.'. $field .'}:</td>
+                            <td>
+                                {foreach $'. $name_table .'_'.$rel_data[0].'_data as $rel}
+                                    {$rel.'.$rel_data[3].'}<br>
+                                {/foreach}
+                            </td>
+                        </tr>';
+                    }
+                    else
+                    {
+                        $fields_replacement .= '<tr class="{cycle values=\'odd,even\'}">
+                            <td>{$'. $name_table .'_fields.'.$field.'}:</td>
+                            <td>{$'. $name_table .'_data.'.$field.'}</td>
+                        </tr>';
+                    }
+                }
             }
-        }
-
-        $fields_replacement = '';
-
-        // REPLACE %RECORD_FIELDS%
-        foreach ( $fields as $key => $field )
-        {
-            if( $this->table_config[$key]['sf_type'] == 'many_related' )
-            {
-                $rel_data = explode( '|', $this->table_config[$key]['sf_related'] );
-
-                $fields_replacement .= '<tr class="{cycle values=\'odd,even\'}">
-                    <td>{$'. $name_table .'_fields.'. $field .'}:</td>
-                    <td>
-                        {foreach $'. $name_table .'_'.$rel_data[0].'_data as $rel}
-                            {$rel.'.$rel_data[3].'}<br>
-                        {/foreach}
-                    </td>
-                </tr>';
-            }
-            else
-            {
-                $fields_replacement .= '<tr class="{cycle values=\'odd,even\'}">
-                    <td>{$'. $name_table .'_fields.'.$field.'}:</td>
-                    <td>{$'. $name_table .'_data.'.$field.'}</td>
-                </tr>';
-            }
-        }
 
 
-        $code_view_show = preg_replace( $exp, $to_replace, $code_view_show );
-        $code_view_show = str_replace( '%RECORD_FIELDS%', $fields_replacement, $code_view_show );
+            $code_view_show = preg_replace( $exp, $to_replace, $code_view_show );
+            $code_view_show = str_replace( '%RECORD_FIELDS%', $fields_replacement, $code_view_show );
 
-        // WRITE TO FILE
-		$file_view_show = $data_path['output_view'] . $name_view_show;
-		write_file( $file_view_show, $code_view_show );
-		
+            // WRITE TO FILE
+    		$file_view_show = $data_path['output_views'] . $name_view_show;
+    		write_file( $file_view_show, $code_view_show );
+		}
 		
 
 
         
         /**
             Generate 'lister' VIEW templates
-        **/                 		
-		$code_view_list = read_file( $data_path['input_view'] . 'list.tpl' );
-
-        /**
-         *  Generate table header and contents HTML template
-         */
-        $table_header = '';
-        $table_contents = '';
-
-        foreach ( $fields as $key => $field )
-        {
-            $hidden_field = $this->table_config[$key]['sf_hidden'];
-
-            // If the user clicked 'hidden' in the config, then iScaffold doesn't list it
-            if( $hidden_field == 0 )
+        **/ 
+        if( isset( $data_path['input_views'] ) )
+        {            
+            if( file_exists( $data_path['input_views'] . 'list.tpl' ) )
             {
-                $table_header .= IN3 . '<th>{$' . $name_table . "_fields.". $field ."}</th>\n";
-                
-                // Test realted table
-                if( $this->table_config[$key]['sf_type'] == 'many_related' )
+        		$code_view_list = read_file( $data_path['input_views'] . 'list.tpl' );
+
+                /**
+                 *  Generate table header and contents HTML template
+                 */
+                $table_header = '';
+                $table_contents = '';
+
+                foreach ( $fields as $key => $field )
                 {
-                    $table_contents .= IN . "<td>\n";
-                    $table_contents .= IN5 . "{foreach \$". $name_table ."_related_fields as \$key=>\$rel}\n";
-                    $table_contents .= IN6 . "{if \$rel.". $name_table ."_id == \$row." . $fields_id . "}{\$rel." . $rel_data[3] . "}<br>{/if}\n";
-                    $table_contents .= IN5 . "{/foreach}\n";
-                    $table_contents .= IN . "</td>\n";
+                    $hidden_field = $this->table_config[$key]['sf_hidden'];
+
+                    // If the user clicked 'hidden' in the config, then iScaffold doesn't list it
+                    if( $hidden_field == 0 )
+                    {
+                        $table_header .= IN3 . '<th>{$' . $name_table . "_fields.". $field ."}</th>\n";
+                        
+                        // Test realted table
+                        if( $this->table_config[$key]['sf_type'] == 'many_related' )
+                        {
+                            $table_contents .= IN . "<td>\n";
+                            $table_contents .= IN5 . "{foreach \$". $name_table ."_related_fields as \$key=>\$rel}\n";
+                            $table_contents .= IN6 . "{if \$rel.". $name_table ."_id == \$row." . $fields_id . "}{\$rel." . $rel_data[3] . "}<br>{/if}\n";
+                            $table_contents .= IN5 . "{/foreach}\n";
+                            $table_contents .= IN . "</td>\n";
+                        }
+                        else
+                        {
+                            $table_contents .= IN . '<td>{$row.'. $field ."}</td>\n";
+                        }
+                    }
                 }
-                else
-                {
-                    $table_contents .= IN . '<td>{$row.'. $field ."}</td>\n";
-                }
+
+                $code_view_list = str_replace( "%TABLE_HEADER%",   $table_header,   $code_view_list );
+        		$code_view_list = str_replace( "%TABLE_CONTENTS%", $table_contents, $code_view_list );
+                $code_view_list = str_replace( "%NAME_VIEW_FORM%", $name_view_list, $code_view_list );
+                $code_view_list = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_list );
+                $code_view_list = str_replace( "%FIELD_ID%",       $fields_id,      $code_view_list );
+
+        		$file_view_list = $data_path['output_views'] . $name_view_list;
+        		write_file( $file_view_list, $code_view_list );
             }
         }
-
-        $code_view_list = str_replace( "%TABLE_HEADER%",   $table_header,   $code_view_list );
-		$code_view_list = str_replace( "%TABLE_CONTENTS%", $table_contents, $code_view_list );
-        $code_view_list = str_replace( "%NAME_VIEW_FORM%", $name_view_list, $code_view_list );
-        $code_view_list = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_list );
-        $code_view_list = str_replace( "%FIELD_ID%",       $fields_id,      $code_view_list );
-
-		$file_view_list = $data_path['output_view'] . $name_view_list;
-		write_file( $file_view_list, $code_view_list );
 
 
 
@@ -714,35 +751,41 @@ class model_iscaffold extends CI_Model
         /**
 			Generate 'form' VIEW templates
         **/
-        $code_form = '';
-		$code_view_form                 = read_file( $data_path['input_view'] . 'form.tpl' );
-        $this->form_factory->form_base  = read_file( $data_path['input_view'] . 'form_base.tpl' ); 
-        $this->form_factory->name_table = $name_table; 
+        if( isset( $data_path['input_views'] ) )
+        {
+            if( file_exists( $data_path['input_views'] . 'form.tpl' ) )
+            {
+                $code_form = '';
+        		$code_view_form                 = read_file( $data_path['input_views'] . 'form.tpl' );
+                $this->form_factory->form_base  = read_file( $data_path['input_views'] . 'form_base.tpl' ); 
+                $this->form_factory->name_table = $name_table; 
 
-        // Build form elements
-        $c = 0;
-		foreach ( $fields as $key => $field )
-		{
-			if ( $key > 0 )
-			{
-                if( isset( $table_meta[ $field ] ) )
-                {
-                    $this->form_factory->field_required = ( $table_meta[ $field ]['null'] == 'no' ) ? TRUE : FALSE;                    
-                }
-                else
-                {
-                    $this->form_factory->field_required = FALSE;                    
-                }
-				$code_form .= $this->form_factory->fetch_block( $field, $this->table_config[$key], $c );
-			}
-			$c++;
-		}
-		$code_view_form = str_replace( "%NAME_VIEW_FORM%", $name_view_form, $code_view_form );
-        $code_view_form = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_form );
-        $code_view_form = str_replace( "%FORM_FIELDS%",    $code_form,      $code_view_form );
+                // Build form elements
+                $c = 0;
+        		foreach ( $fields as $key => $field )
+        		{
+        			if ( $key > 0 )
+        			{
+                        if( isset( $table_meta[ $field ] ) )
+                        {
+                            $this->form_factory->field_required = ( $table_meta[ $field ]['null'] == 'no' ) ? TRUE : FALSE;                    
+                        }
+                        else
+                        {
+                            $this->form_factory->field_required = FALSE;                    
+                        }
+        				$code_form .= $this->form_factory->fetch_block( $field, $this->table_config[$key], $c );
+        			}
+        			$c++;
+        		}
+        		$code_view_form = str_replace( "%NAME_VIEW_FORM%", $name_view_form, $code_view_form );
+                $code_view_form = str_replace( "%NAME_TABLE%",     $name_table,     $code_view_form );
+                $code_view_form = str_replace( "%FORM_FIELDS%",    $code_form,      $code_view_form );
 
-		$file_form = $data_path['output_view'] . $name_view_form;
-		write_file( $file_form, $code_view_form );
+        		$file_form = $data_path['output_views'] . $name_view_form;
+        		write_file( $file_form, $code_view_form );
+            }
+        }
 
 
 
@@ -751,47 +794,49 @@ class model_iscaffold extends CI_Model
         /**
 			Generate Language file                                                                                           
         **/
-        $file_lang = $data_path['output_lang'] . 'db_fields_lang.php';
-
-        if( !file_exists( $file_lang ) )
+        if( $code_template == 'iscaffold_core' )
         {
-            /**
-             *  Create table names list first
-             */
-    		$code_lang = "<?php\n\n";
-    		$code_lang .= "/*************************\n";
-            $code_lang .= "\t Table names\n";
-		    $code_lang .= "*************************/\n";
-		    
-            foreach ( $this->db->list_tables() as $tbl_name )
-    		{
-                if( $tbl_name !== 'sf_config' ) $code_lang .= "\$lang['$tbl_name'] = '".ucfirst( $tbl_name )."';\n";
-    		}
-            file_put_contents( $file_lang, $code_lang ); // Create file
-        }
+            $file_lang = $manifest['output_directory'].DS.'application/language/english/db_fields_lang.php';
 
-		$code_lang = read_file( $file_lang );
-		
-		$code_lang .= "\n\n/*************************\n";
-		$code_lang .= "\t Table: $name_controller\n";
-		$code_lang .= "*************************/\n";
-
-		foreach ( $fields as $key => $field ) 
-		{
-    		$code_lang .= "\$lang['$field'] = '" . $this->table_config[$key]['sf_label'] . "';\n";
-
-    		// Add enum values too
-    		if( !empty( $table_meta[ $field ]['enum_values'] ) )
-    		{
-                $code_lang .= "\t// '$field' has some enum values, you can name them\n";
-                foreach ( $table_meta[ $field ]['enum_values'] as $tmd )
-                {
-                    $code_lang .= "\t\$lang['$tmd'] = '$tmd';\n";
-                }
+            if( !file_exists( $file_lang ) )
+            {
+                /**
+                 *  Create table names list first
+                 */
+        		$code_lang = "<?php\n\n";
+        		$code_lang .= "/*************************\n";
+                $code_lang .= "\t Table names\n";
+    		    $code_lang .= "*************************/\n";
+    		    
+                foreach ( $this->db->list_tables() as $tbl_name )
+        		{
+                    if( $tbl_name !== 'sf_config' ) $code_lang .= "\$lang['$tbl_name'] = '".ucfirst( $tbl_name )."';\n";
+        		}
+                file_put_contents( $file_lang, $code_lang ); // Create file
             }
-		}
-        write_file( $file_lang, $code_lang );
 
+    		$code_lang = read_file( $file_lang );
+    		
+    		$code_lang .= "\n\n/*************************\n";
+    		$code_lang .= "\t Table: $name_controller\n";
+    		$code_lang .= "*************************/\n";
+
+    		foreach ( $fields as $key => $field ) 
+    		{
+        		$code_lang .= "\$lang['$field'] = '" . $this->table_config[$key]['sf_label'] . "';\n";
+
+        		// Add enum values too
+        		if( !empty( $table_meta[ $field ]['enum_values'] ) )
+        		{
+                    $code_lang .= "\t// '$field' has some enum values, you can name them\n";
+                    foreach ( $table_meta[ $field ]['enum_values'] as $tmd )
+                    {
+                        $code_lang .= "\t\$lang['$tmd'] = '$tmd';\n";
+                    }
+                }
+    		}
+            write_file( $file_lang, $code_lang );
+        }
 	} /* End of Process_Table function */
 	
 	/**

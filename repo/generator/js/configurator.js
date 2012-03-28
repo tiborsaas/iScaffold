@@ -1,3 +1,26 @@
+/****************************************************************************
+ *  configurator.js
+ *  JavaScript front end code
+ *  =========================================================================
+ *  Copyright 2012 Tibor Szász
+ *  This file is part of iScaffold.
+ *
+ *  GNU GPLv3 license
+ *
+ *  iScaffold is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  iScaffold is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with iScaffold.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
 
 var Configurator = new Class({
 
@@ -12,7 +35,14 @@ var Configurator = new Class({
 
         // Boot        
         this.initAccordion();        
-        this.initSorting();        
+        this.initSorting();
+
+        if( $('alert_close') )
+        {
+            $('alert_close').addEvent('click',function (e) {
+                this.getParent().destroy();
+            })
+        }
     },
 
     /**
@@ -20,15 +50,13 @@ var Configurator = new Class({
      */         
     initAccordion: function()
     {
-        new Fx.Accordion( $$('h3'), this.tables, {
-            display: -1,
+        new Fx.Accordion( $$('#table_selector a'), this.tables, {
+            display: 0,
        		onActive: function(toggler){
-    			toggler.addClass('active');
-    			toggler.setStyle( 'backgroundColor', '#3399FF' );
+    			toggler.getParent().addClass('active');
     		},
     		onBackground: function(toggler){
-    			toggler.removeClass('active');
-    			toggler.setStyle( 'backgroundColor', '#999999' );
+    			toggler.getParent().removeClass('active');
     		}
         });
     },
@@ -42,7 +70,7 @@ var Configurator = new Class({
         this.lists = {};
         this.tables.each( function( t )
         {
-            var tableName = pass.getTableName(t);
+            var tableName = t.get('rel');
             pass.lists[ tableName ] = new Sortables( t.getElement( 'ul' ), {
                 clone: true,
                 handle: 'h4',
@@ -69,7 +97,7 @@ var Configurator = new Class({
         this.tables.each( function( t )
         {
             // Get table name
-            var tableName = pass.getTableName(t);
+            var tableName = t.get('rel');
     
             // Loop trough fields and collect data
             t.getElements('.field').each( function( f )
@@ -101,6 +129,7 @@ var Configurator = new Class({
             });
         });
 
+
         // db_name,base_url variables are generated in the 'views/configurator.php' template's header
         new Request.JSON({ url: base_url + "index.php/configurator/save/" + db_name, onSuccess: function( rsp, txt ){
 
@@ -109,8 +138,9 @@ var Configurator = new Class({
                 if( rsp.success == 'yes' )
                 {
                     $('save_button').removeClass( 'loading' );
-                    $('save_button').innerHTML = 'Saved, now redirecting...';
-                    document.location = base_url + 'index.php/generate/index/step2/' + db_name;
+                    
+                    // Call parent window's 
+                    parent.app.closeConfigurator();
                 }
             }
             else
@@ -124,10 +154,6 @@ var Configurator = new Class({
         }}).post( { 'json_data': JSON.encode( this.confData ) } );        
     },
 
-    getTableName: function( obj )
-    {
-        return obj.previousElementSibling.innerHTML; 
-    },
 
     /**
      *  Called by 'field type select'

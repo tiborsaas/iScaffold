@@ -1,114 +1,192 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link rel="stylesheet" href="<?php echo base_url(); ?>repo/generator/styles/reset.css" type="text/css" />
-		<link rel="stylesheet" href="<?php echo base_url(); ?>repo/generator/styles/style.css" type="text/css" />
-		<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+<?php
 
-		<!-- jQuery -->
-		<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
-		<script type="text/javascript">
+/****************************************************************************
+ *  welcome_view.php
+ *  The default view
+ *  =========================================================================
+ *  Copyright 2012 Tibor Szász
+ *  This file is part of iScaffold.
+ *
+ *  GNU GPLv3 license
+ *
+ *  iScaffold is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  iScaffold is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with iScaffold.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
+?><!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>iScaffold <?php echo $app_version; ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This is iScaffold!!!">
+    <meta name="author" content="Tibor Szász">
+    <base href="<?php echo base_url(); ?>">
+    <link href="repo/generator/css/bootstrap.css" rel="stylesheet">
+    <link href="repo/generator/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="repo/generator/css/iscaffold.css" rel="stylesheet">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="repo/generator/ico/favicon.ico">
+  </head>
+<body>
+  	<!-- Navbar -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="./index.html">iScaffold <span><?php echo $app_version; ?>, Codename <?php echo $app_codename; ?></span></a> 
+          <div class="nav-collapse">
+            <ul class="nav pull-right">
+              <li><a href="http://iscaffold.skyweb.hu" target="_blank">Project site</a></li>
+              <li><a href="https://github.com/kowdermeister/iScaffold" target="_blank">Github page</a></li>
+              <li><a href="https://github.com/kowdermeister/iScaffold/wiki" target="_blank">Github Wiki</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-			$( function() {
-				$('.message').hide();
-				$('.message').fadeIn(1000);
-			});
+    <div class="app container">
+    		<div class="row-fluid">
 
-			function database_switch( db )
-			{
-				if( db == 'no' )
-				{
-					$('#hidden_steps').animate({height:'0'});
-				}
-				else
-				{
-					$('#hidden_steps').animate({height:'200'});
-					$('#configure').attr( 'href', '<?=base_url()?>index.php/configurator/index/' + db );
-					$('#generate').attr( 'href', '<?=base_url()?>index.php/generate/create/' + db );
-				}
-			}
-		</script>		
-		<title><?php echo "$app_name $app_version"; ?></title>
-	</head>
-	<body>
-		<!-- The main container -->
-		<div id="container">
-			<!-- The header -->
-			<div id="header">
-				<h1 id="title"><?php echo "$app_name $app_version"; ?></h1>
-				<p id="version-codename">Codename: <?php echo $app_codename; ?></p>
-				<p class="top-message">Welcome to <acronym class="yellow" title="This application"><?php echo $app_name; ?></acronym>. This is a <acronym class="red" title="A tool which is meant to result in high-quality, defect-free, and maintainable software products.">CASE</acronym> application built upon <acronym class="green" title="An Open Source PHP framework">CodeIgniter</acronym> that lets you generate your basic <acronym class="blue" title="Files that handle the incoming and outgoing data">Models</acronym>, <acronym class="brown" title="These files show the actual data or output.">Views</acronym> and <acronym class="pink" title="Controllers handle the incoming requests, call models etc">Controllers</acronym> for each table in your database.</p>
-			</div>
-			<!-- The Container -->
-			<div id="content">
-				<div id="welcome">
+    		  <div class="span6">
 
-					<?php if ( $info_message == '' ): ?>
-						<div id="<?php echo $message_id; ?>" class="message">
-							<p><?php echo $dir_message; ?></p>	
-						</div>
-					<?php endif ?>
+    		  	<h1>Welcome</h1>
+
+    		  	<p class="top-message">Welcome to <acronym class="yellow" title="This application">iScaffold</acronym>. This is a <acronym class="red" title="A tool which is meant to result in high-quality, defect-free, and maintainable software products.">CASE</acronym> application built upon <acronym class="green" title="An Open Source PHP framework">CodeIgniter</acronym> that lets you generate your basic <acronym class="blue" title="Files that handle the incoming and outgoing data">Models</acronym>, <acronym class="brown" title="These files show the actual data or output.">Views</acronym> and <acronym class="pink" title="Controllers handle the incoming requests, call models etc">Controllers</acronym> for each table in your database.</p>
+
+    		  	<h1 class="m10">Start here</h1>
+
+      			<div class="btn-group">
+      			  <a class="btn dropdown-toggle btn-large btn-primary" data-toggle="dropdown" id="database_picker_button" href="#">
+      			    Select database
+      			    <span class="caret"></span>
+      			  </a>
+      			  <ul class="dropdown-menu" id="database_picker">
+                  <?php foreach( $databases as $db ): ?>
+                    <?php if( $db !== 'information_schema' && $db !== 'mysql' ): ?><li><a rel="<?=$db?>"><?=$db?></a></li><?php endif; ?>
+                  <?php endforeach; ?>
+      			  </ul>
+      			</div>
+
+            <div id="configurator_wrapper">
+        			<p>Cool, now click the button below, or if you are happy with your settings, generate the application on the right side.</p>
+        			<a class="btn dropdown-toggle btn-large btn-inverse" data-toggle="modal" href="#configurator" id="configure_button" href="#">Open configurator</a>
+            </div>
+
+    		  </div>
 
 
-					<?php if ( $info_message == 'success' ): ?>
-						<div id="<?php echo $message_id; ?>" class="message">
-							<p><?php echo "<b>Hoooray!</b> The CRUD-Application has been succesfully generated. <br /><br />
-                                           Please take the code from the <b>/output/$database</b> directory and copy it to the desired location."; ?></p>
-						</div>						
-					<?php endif ?>
+    		  <!-- Generate code panel -->
 
-					<h2<?php if ( $info_message == 'step2' ): ?> class="lined"<?php endif ?>><?php echo ( $info_message == 'success' ) ? 'Start over ':'Step 1'; ?>: Pick a database</h2>
 
-					<p>iScaffold will create the CRUD application for this database:</p>
+    		  <div class="span6" id="code_generator_block">
 
-					<!-- Pick database -->
+	            <div id="generate_wrapper"><!-- hidden by default -->
 
-					<select id="database" onchange="database_switch(this.value)">
-						<option value="no">Please select a database</option>
-						<?php foreach( $databases as $db ): ?>
-							<?php if( $db !== 'information_schema' && $db !== 'mysql' ): ?><option value="<?=$db?>"<?php echo ( $db == $database )?' selected="selected"':''?>><?=$db?></option><?php endif; ?>
-						<?php endforeach; ?>
-					</select>
+	      		  	<h1>Generate code</h1>
 
-					<?php
-						if ( $info_message == 'success' )
-						{
-							echo 'or ';
-							echo anchor('generate/create/'.$database, 'Generate again',array('title' => 'Generate again','class' => 'generate-link', 'id' => 'generate' ));
-						}				
-					 ?>
+	      		  	<p>To generate your application first pick a code template to work with.</p>
 
-					<?php if ( $info_message != 'step2' ): ?>
-					<div id="hidden_steps">
-					<?php endif; ?>
+	        			<div class="btn-group">
+	        				<a class="btn dropdown-toggle" data-toggle="dropdown" id="code_template_button" href="#">
+	        					iScaffold core
+	        					<span class="caret"></span>
+	        				</a>
+	        				<ul class="dropdown-menu" id="code_template_picker">
+                    <?php foreach( $code_templates as $ct ): ?>
+  	        					<li><a rel="<?=$ct['directory']?>" data-desc="<?=$ct['manifest']['description']?>"><?=$ct['manifest']['name']?></a></li>
+                    <?php endforeach; ?>
+	        				</ul>
+	        			</div>
 
-						<!-- Configuration step -->
+	        			<div id="template_desc">
+	        				<div class="alert alert-info"><?php foreach( $code_templates as $ct ){ if( $ct['directory'] == 'iscaffold_core' ) echo $ct['manifest']['description']; } ?></div>
+	        			</div>
 
-						<h2<?php if ( $info_message == 'step2' || $info_message == 'success' ): ?> class="lined"<?php endif ?>>Step 2: Configuration</h2>
-						
-						<p>Before <acronym class="yellow" title="This application">iScaffold</acronym> creates your code <?php echo anchor('configurator/index/'.$database, 'Configure table data',array('title' => 'Generate the data','class' => 'generate-link', 'id' => 'configure' )) ?>.</p>
-						<p>You can set up diffrent types of inputs for each table fileds.</p>
+	        			<p>The final step comes, click generate to finish your application.</p>
 
-						<!-- Generate code, the config table must exists -->
+	        			<a class="btn dropdown-toggle btn-large btn-danger" id="generate_button" href="#">Generate application</a>
+  
+                <div class="spinner">
+                  <p>Coding hard...</p>
+                  <div class="bar1"></div>
+                  <div class="bar2"></div>
+                  <div class="bar3"></div>
+                  <div class="bar4"></div>
+                  <div class="bar5"></div>
+                  <div class="bar6"></div>
+                  <div class="bar7"></div>
+                  <div class="bar8"></div>
+                  <div class="bar9"></div>
+                  <div class="bar10"></div>
+                  <div class="bar11"></div>
+                  <div class="bar12"></div>
+                </div>
 
-						<?php if( $is_config ): ?>
-						
-							<h2<?php if ( $info_message == 'success' ): ?> class="lined"<?php endif ?>>Step 3: Generate source code</h2>
-						   <p>Using <acronym class="yellow" title="This application">iScaffold</acronym> is very simple, simple click <?php echo anchor('generate/create/'.$database, 'Generate',array('title' => 'Generate the data','class' => 'generate-link', 'id' => 'generate' )) ?>.</p>
+                <div class="alert alert-success hide" id="generate_success">
+                  <p>Your application is generated.</p>
+                </div>
 
-	                    <?php endif; ?>
+                <div class="alert alert-error hide" id="generate_fail">
+                  <p>There was a problem generating your application. It can be server code error. Check your console.</p>
+                </div>
+	          </div>
+    		</div>
+	  </div>
 
-					<?php if ( $info_message != 'step2' ): ?>
-					</div>					
-					<?php endif; ?>
-			
-				</div>
-			</div>
-			<!-- The footer -->
-			<div id="footer">
-				<p>&#169;2009-<?php echo date('Y'); ?> - Tibor Szász, &#214;m&#252;r Yolcu &#73;skender,  All rights reserved<br />This application is powered by CodeIgniter</p>
-			</div>
-		</div>
-	</body>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>©2009-<?php echo date('Y'); ?> - Tibor Szász, All rights reserved. This application is powered by CodeIgniter.</p>
+      <p>This generator GUI is built with <a href="https://github.com/twitter/bootstrap/">Twitter Bootstrap</a>, licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0/">Apache License v2.0</a>.</p>
+    </footer>
+
+  </div><!-- /container -->
+
+
+	<div class="modal fade" id="configurator">
+	  <div class="modal-header">
+	    <h3>Configurator</h3>
+	  </div>
+	  <div class="modal-body">
+	    <iframe src="" frameborder="0" width="100%" id="configurator_frame"></iframe>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn" data-dismiss="modal">Close without saving</a>
+	    <a href="#" class="btn btn-danger" id="save_config">Save changes</a>
+	  </div>
+	</div>
+
+  <!-- javascript includes -->
+  <script src="repo/generator/js/jquery.js"></script>
+  <script src="repo/generator/js/bootstrap-transition.js"></script>
+  <script src="repo/generator/js/bootstrap-alert.js"></script>
+  <script src="repo/generator/js/bootstrap-modal.js"></script>
+  <script src="repo/generator/js/bootstrap-dropdown.js"></script>
+  <script src="repo/generator/js/bootstrap-scrollspy.js"></script>
+  <script src="repo/generator/js/bootstrap-tab.js"></script>
+  <script src="repo/generator/js/bootstrap-tooltip.js"></script>
+  <script src="repo/generator/js/bootstrap-popover.js"></script>
+  <script src="repo/generator/js/bootstrap-button.js"></script>
+  <script src="repo/generator/js/bootstrap-collapse.js"></script>
+  <script src="repo/generator/js/bootstrap-carousel.js"></script>
+  <script src="repo/generator/js/bootstrap-typeahead.js"></script>
+  <script src="repo/generator/js/prefixfree.min.js"></script>
+  <!-- and the winner is -->
+  <script src="repo/generator/js/iscaffold.js"></script>
+
+  </body>
 </html>

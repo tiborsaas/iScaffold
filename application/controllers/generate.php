@@ -1,5 +1,29 @@
 <?php
 
+/****************************************************************************
+ *  generate.php
+ *  Generates the application
+ *  =========================================================================
+ *  Copyright 2012 Tibor Szász
+ *  This file is part of iScaffold.
+ *
+ *  GNU GPLv3 license
+ *
+ *  iScaffold is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  iScaffold is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with iScaffold.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
+
 class Generate extends CI_Controller  {
 
 	function __construct()
@@ -15,106 +39,87 @@ class Generate extends CI_Controller  {
 		$this->load->model('idb');
    	}
 
-	function index( $message = '', $database = FALSE )
+   	/**
+   	 *	This method is called via AJAX
+   	 */
+	function index( $database, $code_template )
 	{
-		$this->idb->connect( $database );
-		$this->load->model('folder_model');
+		$data_path = array();
+		$data_path['code_template'] = $code_template;
 
-		// Check the folder permissions
-		$folder_info = $this->folder_model->check_permissions('./output/');
-
-        $is_config = $this->conf_model->check_config_table(); 
-
-		// Array for system information		
-		$data = array(
-			'app_name' 		=> $this->config->item('app_name'),
-			'app_codename' 	=> $this->config->item('app_codename'),
-			'app_version' 	=> $this->config->item('app_version'),
-			'app_website' 	=> $this->config->item('app_website'),
-			'message_id' 	=> $folder_info['message_id'],
-			'dir_message' 	=> $folder_info['dir_message'],
-			'info_message' 	=> $message,
-			'is_config' 	=> $is_config,
-			'databases'		=> $this->conf_model->list_databases(),
-			'database'		=> $database,
-		);
-
-		// Load the view
-		$this->load->view('welcome_view',$data);
-	}
-
-
-	function create( $database )
-	{
 	    $this->idb->connect( $database );
+
+		$manifest = json_decode( file_get_contents( 'templates'.DS.$code_template.DS.'manifest.json' ), TRUE );
+
+		$path_output = $manifest['output_directory'].DS;
 
 		// Load the folder model
 		$this->load->model('folder_model');
 		
 		// Get the folder permissions
-		$folder_info = $this->folder_model->check_permissions( './output/' );
-		
+		$folder_info = $this->folder_model->check_permissions( $manifest['output_directory'] );
+
 		// Validate the folder permissions
 		if ( $folder_info['is_writeable'] == true ) 
-		{		
+		{
 			$tables = $this->db->list_tables();
 
-			$path_templates				= './templates/';
-			$path_input_controller 		= $path_templates . 'controllers/';
-			$path_input_model			= $path_templates . 'models/';   
-			$path_input_view 			= $path_templates . 'views/';  
+			$path_templates	= 'templates';
 
-			$path_output 				= './output/' . $database . '/';
-			$path_output_application 	= $path_output . 'application/';
-			$path_output_controller 	= $path_output . 'application/controllers/';
-			$path_output_model			= $path_output . 'application/models/';   
-			$path_output_view 			= $path_output . 'application/views/';
-			$path_output_languages   	= $path_output . 'application/language/';
-			$path_output_lang    		= $path_output . 'application/language/english/';
-
-			delete_files( $path_output		, TRUE );
-			@mkdir( $path_output 			, 0777 );
-			mkdir( $path_output_application , 0777 );
-			mkdir( $path_output_controller 	, 0777 );
-			mkdir( $path_output_model 		, 0777 );
-			mkdir( $path_output_view 		, 0777 );
-			mkdir( $path_output_languages	, 0777 );
-			mkdir( $path_output_lang 		, 0777 );
-
-			// Copy CodeIgniter application to the output directory
-			dircopy( 'repo/codeigniter_package', $path_output );
-
-			// Copy additional files to the CodeIgniter installation
-			dircopy( 'repo/ci_extension', $path_output );
-
-			// Copy iScaffold's administration asset files to the target
-			dircopy( 'repo/iscaffold_assets', $path_output );
-
-			// Prepare the paths for the model
-			$data_path['input_controller'] 	= $path_input_controller;
-			$data_path['input_model'] 		= $path_input_model;
-			$data_path['input_view'] 		= $path_input_view;
-			$data_path['output_controller'] = $path_output_controller;
-			$data_path['output_model'] 		= $path_output_model;
-			$data_path['output_view'] 		= $path_output_view;
-
-            // Needs no input file, generated from scratch
-			$data_path['output_lang'] 		= $path_output_lang; 
-	
-			foreach ($tables as $table)
-			{                                                
-				if( $table !== 'sf_config' ) $this->model_iscaffold->Process_Table ( $table, $data_path );
+			/**
+			 *	Create input / output paths for the model_iscaffold.
+			 */
+			foreach ( $manifest['working_directories'] as $dir ) 
+			{
+				if( is_array( $dir ) )
+				{
+					list( $source, $target ) = $dir;
+					$data_path[ 'input_' . $dir[0] ]  = $path_templates.DS.$code_template.DS.$manifest['working_root_directory'].DS.$source.DS;
+					$data_path[ 'output_' . $dir[0] ] = $path_output.DS.$manifest['working_root_directory'].DS.$target.DS;
+				}
+				else
+				{
+					$data_path[ 'input_' . $dir ]  = $path_templates.DS.$code_template.DS.$manifest['working_root_directory'].DS.$dir.DS;
+					$data_path[ 'output_' . $dir ] = $path_output.DS.$manifest['working_root_directory'].DS.$dir.DS;
+				}
 			}
 
-			redirect('generate/index/success/' . $database );
+			/**
+			 *	 Nuke the output directory if neccessery
+			 */
+			if( $manifest['dump_output_directory'] === TRUE )
+			{
+				delete_files( $path_output, TRUE );
+			}
+
+			@mkdir( $path_output, 0777 );
+
+			/**
+			 *	Copdy additional resources
+			 */
+			foreach ( $manifest['copy_directories'] as $dir ) 
+			{
+				dircopy( $dir, $path_output );
+			}
+
+			/**
+			 *	This is wehere the code generation is invoked
+			 *	Each table is processed here
+			 */
+			foreach( $tables as $table )
+			{
+				if( $table !== 'sf_config' ) $this->model_iscaffold->Process_Table( $table, $data_path, $code_template, $manifest );
+			}
+
+			echo '{ "result": "success" }';
 		}
 
 		// The output directory isn't writeable, redirect to the main page
-		else {
-			redirect('generate/index/directory');
+		else 
+		{
+			echo '{ "result": "error", "message": "There was a problem generating your application, output directory not writable." }';
 		}
 	}
 }
 
-/* End of file welcome.php */
-/* Location: ./system/application/controllers/welcome.php */
+/* End of file generate.php */

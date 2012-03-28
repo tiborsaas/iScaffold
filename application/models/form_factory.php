@@ -1,10 +1,28 @@
 <?php
-/* @name  Form_factory
- * @version 0.1
- * @package iScaffold
- * 
- * This model is being used to genererate individual form elements 
- */
+
+/****************************************************************************
+ *  form_factory.php
+ *  This model is being used to genererate individual form elements 
+ *  =========================================================================
+ *  Copyright 2012 Tibor Szász
+ *  This file is part of iScaffold.
+ *
+ *  GNU GPLv3 license
+ *
+ *  iScaffold is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  iScaffold is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with iScaffold.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
 class Form_factory extends CI_Model {
 	
 	function __construct()
@@ -41,7 +59,7 @@ class Form_factory extends CI_Model {
 
         preg_match( $exp, $this->form_base, $matches );
         $return_str = $this->replace_variables( $matches[1] );
-                        
+
         return $return_str;
     }
     
