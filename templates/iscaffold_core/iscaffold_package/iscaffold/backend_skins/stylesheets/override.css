@@ -1,0 +1,16 @@
+/* Override here any style defined by web-app-theme */
+
+#main{
+	float: right;
+}
+
+#sidebar{
+	float: left;
+}
+
+/**
+ *	Override for default style
+ */
+#sidebar ul li {
+	background-position: 9px 11px;
+}

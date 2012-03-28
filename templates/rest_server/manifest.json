@@ -1,0 +1,12 @@
+{
+	"name": "REST Server",
+	"description": "A fully RESTful server implementation for CodeIgniter using one library, one config file and one controller.",
+	"output_directory": "output",
+	"author": "Phil Sturgeon",
+	"template_creator": "Tibor Szász",
+	"output_directory": "rest_output",
+	"working_root_directory": "application",
+	"working_directories": [ ["controllers","controllers/api"] ],
+	"copy_directories": [ "templates/rest_server/rest" ],
+	"dump_output_directory": true
+}

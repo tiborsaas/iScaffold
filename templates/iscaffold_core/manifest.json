@@ -1,0 +1,11 @@
+{
+	"name": "iScaffold core",
+	"description": "This is the core template that generates the models, and the controllers + views for the administration area for iScaffold.",
+	"author": "Tibor Szász",
+	"template_creator": "Tibor Szász",
+	"output_directory": "output",
+	"working_root_directory": "application",
+	"working_directories": [ "controllers", "models", "views" ],
+	"copy_directories": [ "repo/codeigniter_package", "repo/ci_extension", "templates/iscaffold_core/iscaffold_package" ],
+	"dump_output_directory": true
+}
