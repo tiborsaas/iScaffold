@@ -117,7 +117,7 @@ class Generate extends CI_Controller  {
 		// The output directory isn't writeable, redirect to the main page
 		else 
 		{
-			echo '{ "result": "error", "message": "There was a problem generating your application, output directory not writable." }';
+			echo '{ "result": "error", "message": "There was a problem generating your application, ther output directory <strong>('.$manifest['output_directory'].')</strong> is not writable." }';
 		}
 	}
 }
