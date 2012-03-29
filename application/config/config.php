@@ -55,8 +55,8 @@ $config['uri_protocol']	= 'AUTO';
 |
 */
 $config['app_name'] 	= 'iScaffold';
-$config['app_codename'] = 'Toucan';
-$config['app_version'] 	= 'v2.1.2';
+$config['app_codename'] = 'Blackbird';
+$config['app_version'] 	= 'v2.2';
 $config['app_website'] 	= 'http://iscaffold.skyweb.hu';
 
 /*

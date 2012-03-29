@@ -1,0 +1,128 @@
+
+/**************************
+	General stuff
+ *************************/
+
+body{
+	background: url(../img/ricepaper2.png);
+}
+
+p{
+	margin: 10px 0px;
+}
+
+a span{
+	font-size: 12px;
+}
+
+.app {
+ 	padding-top: 70px;
+}
+
+.footer{
+ 	margin-top: 45px;
+	padding: 35px 0 36px;
+	border-top: 1px solid #E5E5E5;
+}
+
+acronym{
+ 	background-color: #09f;
+ 	color: #fff;
+ 	border-radius: 5px;
+ 	padding: 0px 3px;
+}
+
+#template_desc, #path_error, #generate_success, #generate_fail{
+	margin-top: 10px;
+}
+
+#template_desc{
+	width: 0;
+}
+
+#configurator_wrapper{
+	overflow: hidden;
+	height: 0px;	
+}
+
+#code_generator_block{
+	overflow: hidden;
+}
+
+	#generate_wrapper{
+		margin-left: -1500px;
+		overflow: hidden;
+	}
+
+.m10{
+	margin-bottom: 10px;
+}
+
+/**************************
+	Overrides
+**************************/
+
+.dropdown-menu li{
+	cursor: default;
+}
+
+/********************************************************************
+
+	Loading Circle 
+	http://37signals.com/svn/posts/2577-loading-spinner-animation-using-css-and-webkit
+
+********************************************************************/
+
+div.spinner {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+	display: none;
+	margin-top: 10px;
+}
+
+div.spinner p{
+	margin: 0px;
+	padding: 0px;
+	position: relative;
+	left: 30px;
+	top: 2px;
+	width: 100px;
+}
+
+div.spinner div {
+	width: 12%;
+	height: 26%;
+	background: #000;
+	position: absolute;
+	left: 44.5%;
+	top: 37%;
+	opacity: 0;
+	animation: fade 1s linear infinite;
+	border-radius: 50px;
+	box-shadow: 0 0 3px rgba(0,0,0,0.2);
+}
+
+div.spinner div.bar1 {transform:rotate(0deg) translate(0, -142%); animation-delay: 0s;}    
+div.spinner div.bar2 {transform:rotate(30deg) translate(0, -142%); animation-delay: -0.9167s;}
+div.spinner div.bar3 {transform:rotate(60deg) translate(0, -142%); animation-delay: -0.833s;}
+div.spinner div.bar4 {transform:rotate(90deg) translate(0, -142%); animation-delay: -0.75s;}
+div.spinner div.bar5 {transform:rotate(120deg) translate(0, -142%); animation-delay: -0.667s;}
+div.spinner div.bar6 {transform:rotate(150deg) translate(0, -142%); animation-delay: -0.5833s;}
+div.spinner div.bar7 {transform:rotate(180deg) translate(0, -142%); animation-delay: -0.5s;}
+div.spinner div.bar8 {transform:rotate(210deg) translate(0, -142%); animation-delay: -0.41667s;}
+div.spinner div.bar9 {transform:rotate(240deg) translate(0, -142%); animation-delay: -0.333s;}
+div.spinner div.bar10 {transform:rotate(270deg) translate(0, -142%); animation-delay: -0.25s;}
+div.spinner div.bar11 {transform:rotate(300deg) translate(0, -142%); animation-delay: -0.1667s;}
+div.spinner div.bar12 {transform:rotate(330deg) translate(0, -142%); animation-delay: -0.0833s;}
+
+@keyframes fade {
+	from {opacity: 1;}
+	to {opacity: 0.1;}
+}
+
+@keyframes fade {
+	from {opacity: 1;}
+	to {opacity: 0.1;}
+}
