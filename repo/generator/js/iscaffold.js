@@ -51,8 +51,8 @@ $(function()
 
 		$('#database_picker_button').html( this.innerHTML + ' <span class="caret"></span>' );
 		$('#generate_wrapper').animate( { marginLeft: '0' } );
-		$('#configurator_wrapper').animate( { height: '100' } );
-		$('#template_desc').animate( { width: '99%' } );
+		$('#configurator_wrapper').animate( { height: 'inherit' } );
+		$('#template_desc').animate( { width: '99%' }, function(){ $(this).css('height','inherit') } );
 		$('#configurator_frame').attr( 'src', 'index.php/configurator/index/' + this.rel );
 	});
 
