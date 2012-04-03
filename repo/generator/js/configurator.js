@@ -131,7 +131,7 @@ var Configurator = new Class({
 
 
         // db_name,base_url variables are generated in the 'views/configurator.php' template's header
-        new Request.JSON({ url: base_url + "index.php/configurator/save/" + db_name, onSuccess: function( rsp, txt ){
+        new Request.JSON({ url: "index.php/configurator/save/" + db_name, onSuccess: function( rsp, txt ){
 
             if( rsp !== null )
             {

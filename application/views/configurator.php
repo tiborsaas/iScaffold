@@ -33,6 +33,10 @@
 		<link rel="stylesheet" href="repo/generator/css/bootstrap.css" type="text/css" />
 		<link rel="stylesheet" href="repo/generator/css/configurator.css" type="text/css" />
 
+        <script type="text/javascript">
+            var base_url = '<?php echo base_url(); ?>';
+            var db_name = '<?=$db_name?>';
+        </script>
     	<script src="repo/generator/js/mootools.js"></script>
 		<script src="repo/generator/js/mootools-more.js"></script>
 		<script src="repo/generator/js/configurator.js"></script>
