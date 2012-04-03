@@ -119,5 +119,6 @@ app.resizeIframe = function()
 app.closeConfigurator = function()
 {
 	$('#save_config').removeClass('disabled');
+	$('#save_config').html( 'Save changes' );
 	$('#configurator').modal('hide');
 }
