@@ -162,7 +162,7 @@
 	    <h3>Configurator</h3>
 	  </div>
 	  <div class="modal-body">
-	    <iframe src="" frameborder="0" width="100%" id="configurator_frame"></iframe>
+	    <iframe src="" frameborder="0" width="100%" id="configurator_frame" name="configurator_frame"></iframe>
 	  </div>
 	  <div class="modal-footer">
 	    <a href="#" class="btn" data-dismiss="modal">Close without saving</a>
