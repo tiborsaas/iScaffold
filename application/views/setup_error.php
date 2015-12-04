@@ -27,7 +27,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>iScaffold <?php echo $app_version; ?></title>
+    <title>iScaffold error</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="This is iScaffold!!!">
     <meta name="author" content="Tibor Szász">
@@ -46,7 +46,6 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="./index.html">iScaffold <span><?php echo $app_version; ?>, Codename <?php echo $app_codename; ?></span></a> 
           <div class="nav-collapse">
             <ul class="nav pull-right">
               <li><a href="http://tiborsaas.github.io/iScaffold" target="_blank">Project site</a></li>
@@ -63,90 +62,13 @@
 
     		  <div class="span6">
 
-    		  	<h1>Welcome</h1>
+    		  	<h1>Database connection error</h1>
 
-    		  	<p class="top-message">Welcome to <acronym class="yellow" title="This application">iScaffold</acronym>. This is a <acronym class="red" title="A tool which is meant to result in high-quality, defect-free, and maintainable software products.">CASE</acronym> application built upon <acronym class="green" title="An Open Source PHP framework">CodeIgniter</acronym> that lets you generate your basic <acronym class="blue" title="Files that handle the incoming and outgoing data">Models</acronym>, <acronym class="brown" title="These files show the actual data or output.">Views</acronym> and <acronym class="pink" title="Controllers handle the incoming requests, call models etc">Controllers</acronym> for each table in your database.</p>
-
-    		  	<h1 class="m10">Start here</h1>
-
-      			<div class="btn-group">
-      			  <a class="btn dropdown-toggle btn-large btn-primary" data-toggle="dropdown" id="database_picker_button" href="#">
-      			    Select database
-      			    <span class="caret"></span>
-      			  </a>
-      			  <ul class="dropdown-menu" id="database_picker">
-                  <?php foreach( $databases as $db ): ?>
-                    <?php if( $db !== 'information_schema' && $db !== 'mysql' ): ?><li><a rel="<?=$db?>"><?=$db?></a></li><?php endif; ?>
-                  <?php endforeach; ?>
-      			  </ul>
-      			</div>
-
-            <div id="configurator_wrapper">
-        			<p>Cool, now click the button below, or if you are happy with your settings, generate the application on the right side.</p>
-        			<a class="btn dropdown-toggle btn-large btn-inverse" data-toggle="modal" href="#configurator" id="configure_button" href="#">Open configurator</a>
-            </div>
+    		  	<p class="top-message">Please edit <acronym class="green">application/config/database.php</acronym> to setup your connection.</p>
 
     		  </div>
 
-
-    		  <!-- Generate code panel -->
-
-
-    		  <div class="span6" id="code_generator_block">
-
-	            <div id="generate_wrapper"><!-- hidden by default -->
-
-	      		  	<h1>Generate code</h1>
-
-	      		  	<p>To generate your application first pick a code template to work with.</p>
-
-	        			<div class="btn-group">
-	        				<a class="btn dropdown-toggle" data-toggle="dropdown" id="code_template_button" href="#">
-	        					iScaffold core
-	        					<span class="caret"></span>
-	        				</a>
-	        				<ul class="dropdown-menu" id="code_template_picker">
-                    <?php foreach( $code_templates as $ct ): ?>
-  	        					<li><a rel="<?=$ct['directory']?>" data-desc="<?=$ct['manifest']['description']?>"><?=$ct['manifest']['name']?></a></li>
-                    <?php endforeach; ?>
-	        				</ul>
-	        			</div>
-
-	        			<div id="template_desc">
-	        				<div class="alert alert-info"><?php foreach( $code_templates as $ct ){ if( $ct['directory'] == 'iscaffold_core' ) echo $ct['manifest']['description']; } ?></div>
-	        			</div>
-
-	        			<p>The final step comes, click generate to finish your application.</p>
-
-	        			<a class="btn dropdown-toggle btn-large btn-danger" id="generate_button" href="#">Generate application</a>
-  
-                <div class="spinner">
-                  <p>Coding hard...</p>
-                  <div class="bar1"></div>
-                  <div class="bar2"></div>
-                  <div class="bar3"></div>
-                  <div class="bar4"></div>
-                  <div class="bar5"></div>
-                  <div class="bar6"></div>
-                  <div class="bar7"></div>
-                  <div class="bar8"></div>
-                  <div class="bar9"></div>
-                  <div class="bar10"></div>
-                  <div class="bar11"></div>
-                  <div class="bar12"></div>
-                </div>
-
-                <div class="alert alert-success hide" id="generate_success">
-                  <p>Your application is generated.</p>
-                </div>
-
-                <div class="alert alert-error hide" id="generate_fail">
-                  <p>There was a problem generating your application. It can be server code error. Check your console.</p>
-                </div>
-	          </div>
     		</div>
-	  </div>
-
 
     <!-- Footer -->
     <footer class="footer">
@@ -187,6 +109,5 @@
   <script src="repo/generator/js/prefixfree.min.js"></script>
   <!-- and the winner is -->
   <script src="repo/generator/js/iscaffold.js"></script>
-
   </body>
 </html>

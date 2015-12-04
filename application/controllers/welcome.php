@@ -41,7 +41,14 @@ class Welcome extends CI_Controller  {
 
 	function index( $message = '', $database = FALSE )
 	{
-		$this->idb->connect( $database );
+		$db = $this->idb->connect( $database );
+
+		if( !$db )
+		{
+			$this->load->view( 'setup_error' );
+			return;
+		}
+
 		$this->load->model('folder_model');
 
 		// Check the folder permissions
@@ -67,11 +74,6 @@ class Welcome extends CI_Controller  {
 
 		// Load the view
 		$this->load->view( 'welcome_view', $data );
-	}
-
-	function check_folder( $folderName = FALSE )
-	{
-
 	}
 }
 /* End of file welcome.php */
