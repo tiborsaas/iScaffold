@@ -39,12 +39,15 @@ class idb extends CI_Model
         {
         	$this->db_conf['database'] = $database;
         } 
+        $this->load->database( $this->db_conf );
 
-        $conn = $this->load->database( $this->db_conf );
-
-        if( $conn )
+        if( $this->db->database == '' )
         {
         	return false;
+        }
+        else 
+        {
+        	return true;
         }
 	}
 }

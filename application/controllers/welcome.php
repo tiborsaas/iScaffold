@@ -57,7 +57,7 @@ class Welcome extends CI_Controller  {
 
         $is_config = $this->conf_model->check_config_table(); 
 
-		// Array for system information		
+		// Array for system information
 		$data = array(
 			'app_name' 		=> $this->config->item('app_name'),
 			'app_codename' 	=> $this->config->item('app_codename'),
