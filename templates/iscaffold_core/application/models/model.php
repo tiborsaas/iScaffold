@@ -105,7 +105,7 @@ class %NAME_MODEL% extends CI_Model
         if( $this->pagination_enabled == TRUE )
         {
             $config = array();
-            $config['total_rows']  = $this->db->count_all_results('%NAME_TABLE%');
+            $config['total_rows']  = $this->db->count_all_results();
             $config['base_url']    = '%NAME_TABLE%/index/';
             $config['uri_segment'] = 3;
             $config['cur_tag_open'] = '<span class="current">';
@@ -158,7 +158,7 @@ class %NAME_MODEL% extends CI_Model
         if( $this->pagination_enabled == TRUE )
         {
             $config = array();
-            $config['total_rows']  = $this->db->count_all_results('%NAME_TABLE%');
+            $config['total_rows']  = $this->db->count_all_results();
             $config['base_url']    = '/%NAME_TABLE%/search/'.$keyword.'/';
             $config['uri_segment'] = 4;
             $config['per_page']    = $this->pagination_per_page;
