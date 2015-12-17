@@ -1,5 +1,3 @@
 output
 !output/.gitkeep
-
-application/config/config.php
-application/config/database.php
+.env
