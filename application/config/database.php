@@ -48,11 +48,11 @@
 $active_group = 'iscaffold';
 $active_record = TRUE;
 
-$db['iscaffold']['hostname'] = 'localhost';
-$db['iscaffold']['username'] = '';
-$db['iscaffold']['password'] = '';
-$db['iscaffold']['database'] = ''; 		// Just pick on of your database
-										// you can select later which you want to use
+$db['iscaffold']['hostname'] = $_ENV['DB_HOST'];
+$db['iscaffold']['username'] = $_ENV['DB_USER'];
+$db['iscaffold']['password'] = $_ENV['DB_PASS'];
+$db['iscaffold']['database'] = $_ENV['DB_NAME'];
+
 $db['iscaffold']['dbdriver'] = 'mysql';
 $db['iscaffold']['dbprefix'] = '';
 $db['iscaffold']['pconnect'] = TRUE;
