@@ -796,7 +796,7 @@ class model_iscaffold extends CI_Model
         **/
         if( $code_template == 'iscaffold_core' )
         {
-            $file_lang = $manifest['output_directory'].DS.'application/language/english/db_fields_lang.php';
+            $file_lang = $manifest['output_directory'].DS.$data_path['app_dir'].DS.'application/language/english/db_fields_lang.php';
 
             if( !file_exists( $file_lang ) )
             {

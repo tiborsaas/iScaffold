@@ -37,21 +37,22 @@ class Generate extends CI_Controller  {
 		$this->load->model('model_iscaffold');
 		$this->load->model('conf_model');
 		$this->load->model('idb');
-   	}
+	}
 
-   	/**
-   	 *	This method is called via AJAX
-   	 */
+	/**
+	 *	This method is called via AJAX
+	 */
 	function index( $database, $code_template )
 	{
 		$data_path = array();
 		$data_path['code_template'] = $code_template;
+		$data_path['app_dir'] = $database;
 
-	    $this->idb->connect( $database );
+		$this->idb->connect( $database );
 
 		$manifest = json_decode( file_get_contents( 'templates'.DS.$code_template.DS.'manifest.json' ), TRUE );
 
-		$path_output = $manifest['output_directory'].DS;
+		$path_output = $manifest['output_directory'].DS.$database;
 
 		// Load the folder model
 		$this->load->model('folder_model');
