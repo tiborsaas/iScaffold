@@ -370,7 +370,7 @@ class model_iscaffold extends CI_Model
 
                     /**
                      *  Code for MODEL files
-                     */                                                             
+                     */
                     $many_functions = "\tfunction insert_relations( \$target_table, \$items, \$insert_id )
     {
 		if(!empty(\$items))
@@ -558,7 +558,7 @@ class model_iscaffold extends CI_Model
             {
                 mkdir( $data_path['output_controllers'], 0777);
             }
-    		$file_controller = $data_path['output_controllers'] . $name_table . '.php';
+    		$file_controller = $data_path['output_controllers'] . $name_controller . '.php';
     		write_file( $file_controller, $code_controller );
         }
 
@@ -585,7 +585,7 @@ class model_iscaffold extends CI_Model
             $code_model = str_replace( "%MODEL_DELETE_RELATIONS%", $model_delete_relations, $code_model );
     		$code_model = str_replace( "%MANY_FUNCTIONS%",         $many_functions,         $code_model );
 
-    		$file_model = $data_path['output_models'] . 'model_' . $name_table . '.php';
+    		$file_model = $data_path['output_models'] . 'Model_' . $name_table . '.php';
     		write_file( $file_model, $code_model );
         }
         
