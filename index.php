@@ -2,24 +2,6 @@
 
 /*
  *---------------------------------------------------------------
- * LOAD .env
- *---------------------------------------------------------------
- */
-
-require("/application/libraries/dotenv/src/Dotenv.php");
-require("/application/libraries/dotenv/src/Loader.php");
-require("/application/libraries/dotenv/src/Validator.php");
-
-$dotenv = new Dotenv\Dotenv(__DIR__);
-
-try {
-	$dotenv->load();
-} catch ( Exception $e ) {
-	die( '<h1>' . $e->getMessage() .'</h1>' );
-}
-
-/*
- *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
  *---------------------------------------------------------------
  *
