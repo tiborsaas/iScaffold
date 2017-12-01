@@ -36,18 +36,9 @@ class Welcome extends CI_Controller  {
 		$this->load->helper('string');
 		$this->load->model('model_iscaffold');
 		$this->load->model('conf_model');
-		$this->load->model('idb');
    	}
 
-	function index( $message = '', $database = FALSE )
-	{
-		$db = $this->idb->connect( $database );
-
-		if( !$db )
-		{
-			$this->load->view( 'setup_error' );
-			return;
-		}
+	function index( $message = '', $database = FALSE ){
 
 		$this->load->model('folder_model');
 
