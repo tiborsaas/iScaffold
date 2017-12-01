@@ -1,4 +1,5 @@
 # Welcome to iScaffold
+
 iScaffold is a CASE application built upon CodeIgniter that lets you generate your basic Models, Views and Controllers for each table in your database. iScaffold creates a complete, working CodeIgniter installation that is password protected, beautifully desigened, easily usable.
 
 # What is new in 2.2?
